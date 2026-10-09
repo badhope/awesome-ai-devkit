@@ -21,7 +21,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - coding-agent 增强为自动编排者：识别 → 组队 → 生成 → 执行
 - scaffold-runner：新增 --stack 技术栈驱动变量映射（ext/module/test_framework 随栈自适应），并支持自动推断技术栈
 
+### Added — 自适应引擎深化
+- stack-detector 扩展技术栈指纹：移动端（React Native/Flutter/Android/iOS）、AI/ML（LangChain/PyTorch/TensorFlow）、及更多语言
+- coding 默认入口改为自适应（adaptive-feature）；_index/coding-agent 快速开始更新
+- examples/todo-list-react — 第一个完整案例（React 前端自适应开发，含复盘）
+- tests/test_stack_detector.py — 6 项自适应识别单测（React/Go/Python-ML/Flutter/Rust-CLI/library）
+- 真实多技术栈端到端实测全部通过：React 前端、Go 后端、Rust CLI、Python 后端（各 6/6 steps）
+
 ### Fixed
+- stack-detector：修复普通 React 前端被 App.tsx 误判为 mobile（改为依赖含 react-native/expo 才判 mobile）
 - scaffold-runner：修复 scaffold 模板路径占位符（`<feature>`/`<module>`/`<ext>`）未替换导致的产物门禁误判缺失（影响 coding/fullstack 场景）；支持 `--feature` 覆盖与 glob 模糊匹配，并新增回归测试
 
 ## [2.0.0] — 2026-10-09

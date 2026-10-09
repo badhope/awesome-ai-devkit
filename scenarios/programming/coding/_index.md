@@ -14,20 +14,30 @@ scenarios: [programming/coding]
 
 ## 快速开始
 
+**默认入口：自适应开发**（推荐——任何技术栈都能自动适配）
+
 ```bash
 # 1. 把本场景复制到你的项目根
 cp -r scenarios/programming/coding ./devkit-coding
 
-# 2. 自适应执行任意开发任务（自动识别→组队→生成→执行）
-python3 scenarios/programming/coding/lib/stack-detector.py --project . --json   # 先识别技术栈
-# 然后 coding-agent 会自动完成组队 + 生成脚手架 + 执行
+# 2. 让 coding-agent 自适应执行（识别→组队→生成→执行）
+python3 scenarios/programming/coding/lib/stack-detector.py --project . --json   # 先看识别结果
+python3 scaffolds/scaffold-runner.py --root . --provider opencode               # 用默认自适应脚手架
 
-# 3. 或手动选用脚手架
+# 3. 或显式指定技术栈（可选，让 scaffold-runner 的产物/门禁更精准）
+python3 scaffolds/scaffold-runner.py --root . --provider opencode --stack react
+```
+
+**手动选用脚手架**（按需）：
+
+```bash
 cp devkit-coding/scaffolds/feature-development.yaml ./scaffold.yaml
 bash hooks/scripts/pre-task.sh scaffold.yaml
-# ... Agent 按 steps[] 执行 ...
+# ... Agent 依序执行 ...
 bash hooks/scripts/post-task.sh scaffold.yaml
 ```
+
+> **默认自适应脚手架**：`scaffolds/adaptive-feature.yaml` 会根据识别到的技术栈，自动调整产物路径（`.tsx`/`.py`/`.go`）与质量门禁（vitest/pytest/go test/cargo test）。
 
 ## 场景结构
 

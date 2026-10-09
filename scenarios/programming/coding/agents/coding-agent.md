@@ -50,13 +50,16 @@ workingDirectory: ./
 - Go → `cmd/...`，门禁 `go test ./...`
 
 ### Step 4: 执行
-按 scaffold 的 6 阶段推进（见 `workflows/coding-lifecycle.md`）：
+优先使用**自适应脚手架** `scaffolds/adaptive-feature.yaml`（技术栈自动适配产物与门禁），
+若无特殊需求则按其 6 阶段推进（见 `workflows/coding-lifecycle.md`）：
 1. 需求澄清 → instruction-grooming + task-tracker
 2. 方案设计 → architecture-design + project-health + ADR
 3. 编码实现 → 复用框架 agent 按技术栈写代码 + 单元测试
 4. 测试验证 → test-strategy + loop-verification，全量通过
 5. 格式化审查 → linter-formatter + code-review + security-governance
 6. 提交交付 → git-workflow + commit-conventions + memory-persistent
+
+> 默认入口：`python3 scaffolds/scaffold-runner.py --root . --provider opencode`（自动用 adaptive-feature）。
 
 ## 关键原则
 

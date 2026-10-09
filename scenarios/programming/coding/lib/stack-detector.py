@@ -59,6 +59,28 @@ BACKEND_MARKERS = [
     "app/main.py", "application.py", "server.js", "app.js", "index.js",
 ]
 
+MOBILE_MARKERS = [
+    "app.json", "app.config.js", "app.config.ts",   # Expo / React Native
+    "pubspec.yaml",                                   # Flutter
+    "build.gradle", "build.gradle.kts", "settings.gradle",  # Android
+    "Podfile",                                        # iOS CocoaPods
+    "android/app/src/main/AndroidManifest.xml",
+    "ios/Podfile",
+    "lib/main.dart",                                  # Flutter 入口
+]
+
+ML_MARKERS = [
+    "requirements-ai.txt", "ml_requirements.txt", "requirements-ml.txt",
+    "pytorch", "tensorflow", "transformers", "diffusers", "keras",
+    "llm", "rag", "copilot", "fine_tune", "training.py", "train.py",
+    "ml/", "models/", "training/",
+]
+ML_DEPENDENCY_KEYWORDS = [
+    "langchain", "langgraph", "openai", "pytorch", "torch", "tensorflow",
+    "transformers", "diffusers", "scikit-learn", "sklearn", "llama-index",
+    "anthropic", "pydantic-ai", "dspy", "mlx",
+]
+
 DATABASE_MARKERS = [
     "alembic.ini", "prisma/schema.prisma", "schema.sql",
     "docker-compose.yml", "docker-compose.yaml",
@@ -83,6 +105,8 @@ BUILD_TOOLS = {
     "maven": ["pom.xml"],
     "gradle": ["build.gradle", "build.gradle.kts"],
     "pip": ["requirements.txt", "setup.py", "pyproject.toml"],
+    "flutter": ["pubspec.yaml"],
+    "expo": ["app.json", "app.config.js", "app.config.ts"],
 }
 
 PACKAGE_MANAGERS = {
@@ -96,6 +120,7 @@ PACKAGE_MANAGERS = {
     "go mod": ["go.mod"],
     "maven": ["pom.xml"],
     "gradle": ["build.gradle", "build.gradle.kts"],
+    "flutter": ["pubspec.yaml", "pubspec.lock"],
 }
 
 
@@ -156,10 +181,38 @@ def detect(root: Path) -> dict:
     # ── 项目类型 ────────────────────────────────────────────
     has_frontend = any(m in names for m in FRONTEND_MARKERS)
     has_backend = any(m in names for m in BACKEND_MARKERS)
+    has_mobile = any(m in names for m in MOBILE_MARKERS)
+    # React Native 项目：有 App.tsx/App.jsx 且依赖含 react-native / expo 才算 mobile
+    if not has_mobile and ("App.tsx" in names or "App.jsx" in names):
+        try:
+            if package_json.exists():
+                _pj = json.loads(package_json.read_text(encoding="utf-8"))
+                _deps = {**_pj.get("dependencies", {}), **_pj.get("devDependencies", {})}
+                if "react-native" in _deps or "expo" in _deps:
+                    has_mobile = True
+        except Exception:
+            has_mobile = False
+    has_ml = any(m in names for m in ML_MARKERS) or any(
+        d in dirs for d in ("ml", "models", "training"))
+    # 依赖内容命中 AI 关键词（langchain/openai/pytorch 等）
+    if not has_ml:
+        try:
+            dep_text = ""
+            for f in ("requirements.txt", "requirements-ai.txt", "pyproject.toml", "package.json"):
+                p = root / f
+                if p.exists():
+                    dep_text += p.read_text(encoding="utf-8", errors="ignore").lower()
+            has_ml = any(k in dep_text for k in ML_DEPENDENCY_KEYWORDS)
+        except Exception:
+            has_ml = False
     has_db = any(m in names for m in DATABASE_MARKERS) or any(
         d in dirs for d in ("migrations", "alembic"))
 
-    if has_frontend and has_backend:
+    if has_mobile:
+        ptype = "mobile"
+    elif has_ml:
+        ptype = "ml"
+    elif has_frontend and has_backend:
         ptype = "fullstack"
     elif has_frontend:
         ptype = "frontend"
@@ -174,6 +227,37 @@ def detect(root: Path) -> dict:
     else:
         ptype = "library"
 
+    # ── 移动端 / AI 技术栈细化（package.json 或 pubspec）─────
+    if ptype in ("mobile", "ml"):
+        try:
+            if (root / "pubspec.yaml").exists():
+                tech_stack = "Flutter (Dart)"
+            elif package_json.exists():
+                data = json.loads(package_json.read_text(encoding="utf-8"))
+                deps = {**data.get("dependencies", {}), **data.get("devDependencies", {})}
+                if "react-native" in deps or "expo" in deps:
+                    tech_stack = "React Native" + (" + TypeScript" if "typescript" in deps else "")
+                if ptype == "ml" and any(k in deps for k in ("langchain", "openai")):
+                    tech_stack = "AI Agent (LangChain/OpenAI)"
+        except Exception:
+            pass
+    if ptype == "ml" and tech_stack == primary:
+        # 由 requirements/pyproject 推断 AI 栈
+        try:
+            req = ""
+            for f in ("requirements.txt", "pyproject.toml"):
+                p = root / f
+                if p.exists():
+                    req += p.read_text(encoding="utf-8", errors="ignore").lower()
+            if "langchain" in req:
+                tech_stack = "AI Agent (LangChain)"
+            elif "pytorch" in req or "torch" in req:
+                tech_stack = "ML (PyTorch)"
+            elif "tensorflow" in req:
+                tech_stack = "ML (TensorFlow)"
+        except Exception:
+            pass
+
     # ── 测试框架 ────────────────────────────────────────────
     test_fw = None
     for fw, spec in TEST_FRAMEWORKS.items():
@@ -183,6 +267,8 @@ def detect(root: Path) -> dict:
     if test_fw is None and primary:
         test_fw = {"Python": "pytest", "JavaScript": "jest", "TypeScript": "jest",
                    "Go": "go test", "Rust": "cargo test"}.get(primary, "unknown")
+    if ptype == "mobile" and (root / "pubspec.yaml").exists():
+        test_fw = "flutter test"
 
     # ── 构建 / 包管理 ──────────────────────────────────────
     build_tool = next((t for t, ms in BUILD_TOOLS.items() if any(m in names for m in ms)), None)
