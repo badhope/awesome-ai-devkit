@@ -1,68 +1,68 @@
-# Platforms — 跨平台接入层
+# Platforms — 平台自省与能力矩阵
 
-> Awesome AI DevKit 支持**所有主流 AI 编码平台**。统一接入方式为：
-> **1 个 AGENTS.md 权威指令 + MCP 官方工具连接 + 各平台官方配置格式**。
+> **根本原则：不重复造轮子。**
+> 我们的目标是：**无论从哪个平台、哪个空白项目开始，把该平台的 Agent 能力从空白自动拉到最大。**
+> 为此，**平台已内置的能力直接复用，绝不重复造；只有在"平台本身没有"时才由我们补充。** 避免重复、避免冲突。
 
-## 接入原则（坚持官方协议，不自造）
+## 通用能力只用一个开放载体
 
-1. **统一指令**：根 `AGENTS.md` 是跨平台权威说明书（Cursor / Claude Code / Codex / Gemini / Copilot / Cline 官方支持）。各平台配置都指向它，避免多份重复维护。
-2. **工具连接**：一律用 **MCP**（Model Context Protocol，Linux Foundation 托管的开放标准）。
-3. **平台适配**：每个平台提供其**官方格式**的配置；官方不指定时用 AGENTS.md + MCP 兜底。
-4. **可扩展**：新增平台 = 在 `platforms/<name>/` 加一份官方配置，参考既有范例。
+通用能力层用**开放标准**承载，维护一份、处处生效（不因平台而各写各的）：
 
-## 平台矩阵
+| 能力 | 开放载体 | 说明 |
+|------|------|------|
+| 统一指令/规则 | **`AGENTS.md`**（仓库根） | 跨工具标准，主流平台原生读取 |
+| 技能 Skills | **`SKILL.md`**（`agentskills.io` 开放格式） | 按需加载的专业能力包 |
+| 工具连接 | **`MCP`**（Model Context Protocol） | 开放标准，主流平台全支持 |
 
-| 平台 | 官方接入格式 | AGENTS.md | MCP | 状态 |
-|------|------|:---:|:---:|:---:|
-| **海外主流** | | | | |
-| Claude Code | `CLAUDE.md` / `~/.claude/plugins` / Skills | ✅ | ✅ | ready |
-| Cursor | `.cursor/rules/*.mdc`（兼容 `.cursorrules`） | ✅ | ✅ | ready |
-| OpenAI Codex | `AGENTS.md`（CLI 官方） | ✅ | ✅ | ready |
-| Gemini CLI | `GEMINI.md` / `AGENTS.md` | ✅ | ✅ | ready |
-| GitHub Copilot | `.github/copilot-instructions.md` | ✅ | ✅ | ready |
-| Cline | `CLAUDE.md`（兼容）/ `.clinerules` | ✅ | ✅ | ready |
-| Windsurf | `.windsurf/rules/*.md` | ✅ | ✅ | ready |
-| **国产主流** | | | | |
-| 通义灵码（阿里） | 官方规则/技能 + MCP | ✅ | ✅ | ready |
-| 豆包 MarsCode（字节） | 官方 MCP / 技能 | ✅ | ✅ | ready |
-| Kimi for Coding | `AGENTS.md` / MCP | ✅ | ✅ | ready |
-| Trae（腾讯） | MCP + 规则 | ✅ | ✅ | ready |
-| 百度 Comate | MCP + 指令 | ✅ | ✅ | ready |
-| 智谱 CodeGeeX | `CLAUDE.md` / AGENTS 兼容 + MCP | ✅ | ✅ | ready |
-| **长尾工具** | | | | |
-| Zed | `.rules/` / AGENTS.md | ✅ | ✅ | ready |
-| Continue | `config.json` + MCP | ✅ | ✅ | ready |
-| Aider | `CONVENTIONS.md` | ✅ | ✅ | ready |
-| JetBrains AI Assistant | 项目级 MCP + 指令 | ✅ | ✅ | ready |
+平台已内置的机制（Skill 加载、Subagents/多 Agent 协作、Rules、Hooks、MCP 客户端、命令/插件）——**全部复用平台原生能力**，我们不重复实现。
 
-> `ready` = 已提供官方格式适配；标注以该平台官方最新文档为准。
+## 平台能力矩阵（内置→复用；缺→我们补）
 
-## 目录约定
+| 平台 | 平台原生内置（我们复用） | 我们需补 | 官方入口 |
+|------|------|:---:|------|
+| Claude Code | CLAUDE.md / Skills / Subagents / Agent Teams / MCP / Hooks / Plugins | 仅组织场景内容 | `claude-code/CLAUDE.md` |
+| Cursor | Rules / Skills / MCP / Agent / CLI / hooks | 仅组织场景内容 | `cursor/examples/*.mdc` |
+| OpenAI Codex | AGENTS.md / MCP / Skills | 复用根 AGENTS.md | （根 AGENTS.md） |
+| Gemini CLI | GEMINI.md / AGENTS.md / MCP | 仅入口 | `gemini-cli/GEMINI.md` |
+| GitHub Copilot | copilot-instructions / AGENTS.md / MCP / Skills | 仅入口 | `github-copilot/copilot-instructions.md` |
+| Cline | CLAUDE.md 兼容 / MCP | 复用 | — |
+| Windsurf | `.windsurf/rules` / AGENTS.md | 复用 | — |
+| 通义灵码 | MCP / 指令 / 技能 | 复用 | — |
+| 豆包 MarsCode | MCP / 技能 | 复用 | — |
+| Kimi for Coding | AGENTS.md / MCP | 复用 | — |
+| Trae | MCP / 规则 | 复用 | — |
+| 百度 Comate | MCP / 指令 | 复用 | — |
+| 智谱 CodeGeeX | AGENTS 兼容 / MCP | 复用 | — |
+| Zed / Continue / Aider / JetBrains | 各自官方支持 AGENTS.md + MCP | 复用 | — |
+
+> 结论：主流平台**都已内置** AGENTS.md + Skills + MCP 三件套。绝大多数情况下我们**只需**让平台读取根 `AGENTS.md` 与 `SKILL.md` 即可，**无需为平台专门造配置**。个别平台因官方入口文件不同（CLAUDE.md / GEMINI.md / copilot-instructions.md）才保留对应入口文件。
+
+## 自省机制（让 Agent 知道自己该用什么）
+
+`AGENTS.md` 内置**平台自省声明**，Agent 读取时按以下逻辑工作：
+
+```
+1. 识别当前平台（读取本仓库 AGENTS.md / 平台入口文件）
+2. 用平台原生机制加载：Rules / Skills(SKILL.md) / MCP
+3. 平台已有的（多 Agent、Subagents、Hook、命令）→ 用平台原生的，不重复
+4. 平台没有的（某个领域场景、专家团队提示词）→ 才加载 platforms/scenarios 内容
+5. 全程遵循根 AGENTS.md 的规则，不自造协议、不与平台冲突
+```
+
+## 目录约定（只保留"官方必需"入口文件）
 
 ```
 platforms/
-├── README.md                    # 本文件（总览 + 矩阵）
-├── <平台>/README.md             # 该平台接入说明 + 官方配置
-│   └── <官方格式文件>           # 可复制到项目根 / 平台目录
-```
-
-## 通用接入步骤（对任意平台）
-
-```bash
-# 1. 克隆框架
-git clone https://gitcode.com/badhope/awesome-ai-devkit.git
-cd awesome-ai-devkit
-
-# 2. 健康检查
-python devkit-doctor.py
-
-# 3. 选一个场景，在目标平台加载（见 platforms/<平台>/）
+├── README.md                       # 本文件：平台能力矩阵 + 自省机制
+├── claude-code/CLAUDE.md           # Claude Code 官方入口（内容指向根 AGENTS.md）
+├── gemini-cli/GEMINI.md            # Gemini CLI 官方入口
+├── github-copilot/copilot-instructions.md  # Copilot 官方入口
+└── cursor/examples/*.mdc           # Cursor Rules 官方格式示例
 ```
 
 ## 参考
-
-- `AGENTS.md`（仓库根）— 统一指令权威
-- `mcp/config/` — 各平台 MCP 配置
-- `docs/PLATFORMS.md` — 详细平台×协议支持文档
+- `AGENTS.md`（根）— 统一指令权威（含平台自省声明）
+- `mcp/config/` — 各平台 MCP 配置（官方格式）
+- `scenarios/<场景>/` — 领域专用内容（按需加载）
 
 > AI生成

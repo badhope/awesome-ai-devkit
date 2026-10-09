@@ -67,13 +67,20 @@ Awesome AI DevKit 是一个**跨平台的场景化 AI 编程配置生态**。它
 
 ---
 
-## 6. 平台适配
+## 6. 平台适配（不重复造轮子）
 
-本仓库为**所有主流 AI 编码平台**提供官方格式的接入层，见 `platforms/` 与 `docs/PLATFORMS.md`。通用原则：
+面向所有主流 AI 编码平台。核心原则：
 
-- **统一指令**：以本 `AGENTS.md` 为权威，各平台配置生成/指向它，避免多份重复维护。
-- **工具连接**：统一走 **MCP**。
-- **场景加载**：各平台按其官方插件/规则机制加载 `scenarios/`。
+- **复用平台原生能力**：Skill 加载、Subagents/多 Agent 协作、Rules、Hooks、MCP 客户端、命令/插件——平台已内置，**绝不重复造**。
+- **只补平台缺失的**：领域场景、专家团队提示词、私有规则等平台没有的，才由仓库提供。
+- **统一开放载体**：通用能力只用一个载体维护 —— 本 `AGENTS.md` + `agentskills.io` 的 `SKILL.md` + `MCP`。
+- **平台自省（Agent 读取时判定用什么）**：
+  1. 识别平台：读取根 `AGENTS.md` 或平台入口文件（`CLAUDE.md` / `GEMINI.md` / `copilot-instructions.md` / `.cursorrules`）
+  2. 平台已内置的 → 用平台原生的（多 Agent、Skill 加载、MCP、Hook），不重复
+  3. 平台缺失的 → 才加载 `scenarios/` / `platforms/` 内容
+  4. 全程遵循本 `AGENTS.md`，不自造协议、不与平台冲突
+
+各平台能力矩阵与自省机制见 [`platforms/README.md`](platforms/README.md)。
 
 ---
 

@@ -15,12 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - scenarios/programming/fullstack/{bootstrap.sh,bootstrap.ps1}
 - context/architecture.md (ADR-001)
 - docs/requirements/devkit-doctor.md + docs/design/devkit-doctor.md
-- AGENTS.md — 跨平台统一指令（官方 AGENTS.md 标准）
-- platforms/ — 17+ 主流平台官方格式接入层（Claude Code / Cursor / Codex / Gemini / Copilot / Cline / Windsurf / 通义 / MarsCode / Kimi / Trae / Comate / CodeGeeX / Zed / Continue / Aider / JetBrains）
-- docs/PLATFORMS.md — 平台×协议支持矩阵
+- AGENTS.md — 跨平台统一指令（官方 AGENTS.md 标准，含平台自省声明）
+- platforms/ — 平台能力矩阵 + 自省机制（复用平台原生能力，不重复造轮子）
 
 ### Changed
 - scaffold.yaml split sequential/parallel (YAML dup-key bug) → flat v2.0
+- platforms/ 重构：删除 17 个重复平台 README，改为单一平台能力矩阵 + 自省声明（复用平台原生能力）
+- AGENTS.md 增加平台自省机制（识别平台 → 用平台原生能力 → 只补缺失）
 - fullstack/scaffolds/*.yaml rewritten in v2.0
 - hooks/scripts/{error-alert.sh,pre-task.sh} bash JSON parsing → Python inline
 - mcp/config/awesome-servers.json 28 servers → 12 (removed duplicate-key hack)
@@ -32,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fullstack/validation/ (5 scripts)
 - hooks/scripts/middleware/ (6 orphaned middleware files)
 - tools/README.md
+- docs/PLATFORMS.md（内容并入 platforms/README.md）
+- platforms/ 下 17 个冗余平台 README（保留官方必需入口）
 
 ### Fixed
 - YAML duplicate key silently dropping steps
