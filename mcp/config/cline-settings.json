@@ -2,7 +2,7 @@
   "mcpServers": {
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/mnt/data/catpaw/home/workspace/环境"],
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"],
       "disabled": false
     },
     "github": {
