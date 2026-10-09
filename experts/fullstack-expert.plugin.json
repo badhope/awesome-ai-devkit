@@ -50,22 +50,22 @@
       "config": "mcp-config.yaml",
       "servers": [
         "filesystem", "git", "github", "postgres",
-        "redis", "qdrant", "memory", "browser",
-        "puppeteer", "sequential-thinking", "fetch"
+        "redis", "docker", "playwright", "stripe", "resend",
+        "sentry", "figma", "qdrant", "notion", "slack",
+        "linear", "vercel", "exa", "helicone", "supabase"
       ]
     },
     "skills": {
       "path": "../../scenarios/programming/fullstack/skills/",
-      "count": 19,
+      "count": 23,
       "categories": {
-        "design": ["design-system", "ux-research", "accessibility"],
-        "frontend": ["frontend-architecture", "component-patterns", "data-fetching", "performance-ux", "state-management", "forms", "testing-components"],
-        "backend": ["backend-architecture", "api-design", "api-client", "api-versioning", "database-design", "data-modeling", "migrations", "graphql", "microservices", "webhooks"],
-        "auth-security": ["auth-implementation", "auth-advanced", "security", "rate-limiting", "soft-delete"],
-        "devops": ["cicd-pipeline", "containers", "deployment", "monitoring", "logging-observability"],
-        "data-ai": ["ai-integration", "search", "analytics", "background-jobs", "queues", "caching"],
-        "qa": ["testing", "test-strategy", "testing-advanced", "testing-components", "debugging", "production-hardening"],
-        "product": ["collaboration", "project-management", "tech-writing", "i18n", "email", "storage", "payments", "notifications", "seo", "onboarding"]
+        "workflow": ["scaffold-workflow", "instruction-grooming", "task-tracker", "integration-patterns"],
+        "quality": ["code-duplication", "mutation-testing", "linter-formatter", "loop-verification", "project-health"],
+        "security": ["security-governance", "sub-agent-guard", "dependency-audit"],
+        "context": ["context-compression", "memory-management", "memory-persistent", "model-routing"],
+        "infra": ["devkit-infra", "devkit-utilities", "calculator-math", "auto-heal"],
+        "release": ["semantic-release", "git-workflow"],
+        "frontend": ["web-browser-vision"]
       }
     },
     "agents": {
@@ -78,15 +78,14 @@
     },
     "hooks": {
       "path": "../../hooks/",
-      "middleware": ["rate_limiter", "auth_check", "sql_guard", "cache"]
+      "middleware": ["auth_check"]
     },
     "context": {
       "path": "../../scenarios/programming/fullstack/context/",
       "templates": ["project.template.yaml", "session.template.json", "architecture.md"]
     },
     "validation": {
-      "entry": "checks.py",
-      "schemas": ["skill.schema.json", "agent.schema.json", "workflow.schema.json"]
+      "entry": "../../devkit-doctor.py"
     }
   },
 
