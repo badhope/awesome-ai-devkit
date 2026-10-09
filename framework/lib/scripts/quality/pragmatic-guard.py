@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Awesome AI DevKit — Pragmatic Guard v1.0
+Awesome AI DevKit — Pragmatic Guard v1.1
 防「AI 坏毛病」强制门禁脚本：重复造轮 / 冗余文件 / 虚假实现 / 过度设计 / 业务不合现实。
 
 用法:
@@ -21,81 +21,119 @@ import sys
 from pathlib import Path
 
 
-# ── 1. 虚假实现：占位符 / 空壳 / 未完成标记 ──────────────────────────
-FAKE_PLACEHOLDER_PATTERNS = [
-    r"^\s*pass\s*(#.*)?$",                      # 空函数体（Python）
-    r"NotImplementedError",
-    r"^\s*(\.\.\.)\s*(#.*)?$",                  # 省略号占位
-    r"\bTODO\b", r"\bFIXME\b", r"\bXXX\b",
-]
-FAKE_EMPTY_FN = re.compile(
-    r"\b(def|function|func|fn)\s+(\w+)\s*\([^)]*\)\s*[:{]\s*"
-    r"(\n\s*(pass|\.\.\.)\s*\n?)+"
+# 排除目录：依赖/构建/版本控制/框架层自身/测试/文档
+SKIP_DIRS = {
+    "node_modules", ".git", ".venv", "venv", "__pycache__", "dist", "build",
+    ".next", "target", ".temp", ".pytest_cache", ".ruff_cache", "logs",
+    "framework",           # 框架层自身（能力仓库，非项目业务代码）
+    "docs",                # 文档
+    "tests",               # 测试（故意构造的边界用例不算坏毛病）
+    "examples",            # 示例
+    "scripts", "hooks", "platforms", "scaffolds", "rules", "experts",
+}
+TEST_FILE_PATTERNS = (
+    re.compile(r"^test_"), re.compile(r"_test\.py$"), re.compile(r"\.test\.(ts|tsx|js|jsx)$"),
+    re.compile(r"(spec|test)\.(ts|tsx|js|jsx|go|rs)$"), re.compile(r"_test\.go$"),
 )
 
-# ── 2. 冗余文件 / 空文件 / 无用命名 ─────────────────────
-EMPTY_FILE_EXTS = {".py", ".ts", ".tsx", ".js", ".jsx", ".go", ".rs",
-                   ".java", ".kt", ".swift", ".rb", ".cpp", ".c"}
-USELESS_NAME_PARTS = ["util", "placeholder", "dummy", "stub", "fake_",
-                      "temp_", "tmp_", "example_stub"]
-
-# ── 3. 过度设计信号 ─────────────────────────────────────
-OVERENGINEER_PATTERNS = [
-    re.compile(r"AbstractFactory|BaseFactory|FactoryFactory"),
-    re.compile(r"class\s+\w+(Config|Options|Context)\w*", re.IGNORECASE),
-    re.compile(r"util_util|helper_helper|manager_manager|service_service", re.IGNORECASE),
-    re.compile(r"if\s+False\s*:|@\s*\w*(deprecated|unused)\b", re.IGNORECASE),
+# ── 1. 虚假实现 ──────────────────────────────────────────
+# 空函数体：def/function/func/fn X(...): 后紧跟 pass 或 ...
+FAKE_EMPTY_FN = re.compile(
+    r"\b(def|function|func|fn)\s+(\w+)\s*\([^)]*\)\s*:\s*\n\s*(pass|\.\.\.)\s*(\n|$)",
+    re.MULTILINE,
+)
+# 单行占位标记
+FAKE_MARKERS = [
+    re.compile(r"\braise\s+NotImplementedError\b"),
+    re.compile(r"\bTODO\b"), re.compile(r"\bFIXME\b"), re.compile(r"\bXXX\b"),
+    re.compile(r"return\s+None\s*#\s*(TODO|stub|未实现|not.?implemented|占位)", re.IGNORECASE),
 ]
 
-# ── 4. 业务不合现实 / 魔法值 ────────────────────────────
+# ── 2. 冗余文件 ──────────────────────────────────────────────
+EMPTY_FILE_EXTS = {".py", ".ts", ".tsx", ".js", ".jsx", ".go", ".rs",
+                   ".java", ".kt", ".swift", ".rb", ".cpp", ".c"}
+USELESS_NAME_PARTS = ["placeholder", "dummy", "stub", "fake_", "temp_", "tmp_", "useless", "delete_me"]
+
+# ── 3. 过度设计信号 ──────────────────────────────────────────
+OVERENGINEER_PATTERNS = [
+    re.compile(r"AbstractFactory|BaseFactory|FactoryFactory"),
+    re.compile(r"class\s+\w+(Manager|Registry|Service)Manager\b", re.IGNORECASE),
+    re.compile(r"\b\w+_\w+_(util|helper)\b", re.IGNORECASE),
+    re.compile(r"if\s+False\s*:"),
+]
+
+# ── 4. 业务不合现实 ──────────────────────────────────────────
 MAGIC_NUMBER = re.compile(r"(?<![\w.])\d{5,}(?![\w.])")
-# 常见玩具/演示字符串（不符合真实业务）
 TOY_STRINGS = ["hello", "world", "foobar", "test123", "asdf", "lorem", "dummy_data"]
+STRING_RE = re.compile(r"['\"][^'\"]*['\"]")
+
+
+def _is_test_file(path: Path) -> bool:
+    name = path.name
+    stem = path.stem
+    return any(p.search(name) or p.search(stem) for p in TEST_FILE_PATTERNS)
+
+
+def _should_scan(root: Path, p: Path) -> bool:
+    """是否扫描该文件：非跳过目录、非测试文件、后缀在源码列表。"""
+    rel = p.relative_to(root)
+    if any(part in SKIP_DIRS for part in rel.parts):
+        return False
+    if p.suffix.lower() not in EMPTY_FILE_EXTS:
+        return False
+    if _is_test_file(p):
+        return False
+    return True
 
 
 def _source_files(root: Path) -> list:
-    skip = {"node_modules", ".git", ".venv", "venv", "__pycache__", "dist",
-            "build", ".next", "target", ".temp", ".pytest_cache", ".ruff_cache", "logs"}
-    files = []
-    for p in root.rglob("*"):
-        if not p.is_file():
-            continue
-        rel = p.relative_to(root)
-        if any(x in rel.parts for x in skip):
-            continue
-        if p.suffix.lower() in EMPTY_FILE_EXTS:
-            files.append(p)
-    return files
+    return [p for p in root.rglob("*") if p.is_file() and _should_scan(root, p)]
 
 
-def _load_text(root: Path) -> dict:
-    return {p: p.read_text(encoding="utf-8", errors="ignore")
-            for p in _source_files(root)}
+def _strip_comments(line: str) -> str:
+    """去除行内注释（# 和 //）。"""
+    if "#" in line:
+        line = line.split("#", 1)[0]
+    elif "//" in line and not line.strip().startswith(("http", "://")):
+        line = line.split("//", 1)[0]
+    return line
+
+
+def _in_string(text: str, pos: int) -> bool:
+    """判断文本某位置是否在字符串字面量内。"""
+    # 简易：扫描到 pos 的引号配对数
+    before = text[:pos]
+    return before.count('"') % 2 == 1 or before.count("'") % 2 == 1
 
 
 def check_fake(root: Path) -> list:
     issues = []
-    for p, text in _load_text(root).items():
+    for p in _source_files(root):
         rel = str(p.relative_to(root)).replace(os.sep, "/")
-        lines = text.splitlines()
-        for i, line in enumerate(lines, 1):
-            if line.lstrip().startswith(("#", "//", "/*", "*", "--")):
-                continue
-            for pat in FAKE_PLACEHOLDER_PATTERNS:
-                if re.search(pat, line):
-                    issues.append(f"[fake] {rel}:{i} 占位/未实现: {line.strip()[:60]}")
-                    break
+        text = p.read_text(encoding="utf-8", errors="ignore")
+        # 空函数体（pass）
         for m in FAKE_EMPTY_FN.finditer(text):
-            issues.append(f"[fake] {rel} 空函数体: {m.group(2)}()")
+            issues.append(f"[fake] {rel} 空函数体/仅占位: {m.group(0).strip()[:50]}")
+        # 未实现标记（跳过字符串与注释）
+        for i, line in enumerate(text.splitlines(), 1):
+            stripped = line.strip()
+            if stripped.startswith(("#", "//", "/*", "*", "--")):
+                continue
+            for pat in FAKE_MARKERS:
+                if pat.search(line):
+                    issues.append(f"[fake] {rel}:{i} 占位/未实现: {stripped[:60]}")
+                    break
     return issues
 
 
 def check_redundancy(root: Path) -> list:
     issues = []
-    texts = _load_text(root)
-    all_rel = {str(p.relative_to(root)).replace(os.sep, "/") for p in texts}
+    texts = {}
+    for p in _source_files(root):
+        texts[p] = p.read_text(encoding="utf-8", errors="ignore")
+    rels = {str(p.relative_to(root)).replace(os.sep, "/") for p in texts}
     all_text = "\n".join(texts.values())
-    entry_names = {"index", "app", "main", "__init__", "cli", "server"}
+    entry_stems = {"index", "app", "main", "__init__", "cli", "server", "manage"}
     for p, text in texts.items():
         rel = str(p.relative_to(root)).replace(os.sep, "/")
         if not text.strip():
@@ -106,26 +144,21 @@ def check_redundancy(root: Path) -> list:
             if part in base:
                 issues.append(f"[redundant] 疑似无用命名: {rel}")
                 break
-        # 未被引用检查（入口文件除外）
-        if p.stem not in entry_names:
+        # 未被引用（排除入口文件）
+        if p.stem not in entry_stems:
             stem = p.stem
-            referenced = False
-            for other_rel, other_text in texts.items():
-                if other_rel == rel:
-                    continue
-                if re.search(rf"\b{re.escape(stem)}\b", other_text):
-                    referenced = True
-                    break
-            if not referenced and len(texts) > 1:
+            if stem not in all_text and len(texts) > 1:
                 issues.append(f"[redundant] 可能未被引用: {rel}")
     return issues
 
 
 def check_overengineering(root: Path) -> list:
     issues = []
-    for p, text in _load_text(root).items():
+    for p in _source_files(root):
         rel = str(p.relative_to(root)).replace(os.sep, "/")
-        for i, line in enumerate(text.splitlines(), 1):
+        for i, line in enumerate(p.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
+            if line.strip().startswith(("#", "//")):
+                continue
             for pat in OVERENGINEER_PATTERNS:
                 if pat.search(line):
                     issues.append(f"[overengine] {rel}:{i} 过度设计: {line.strip()[:60]}")
@@ -135,21 +168,31 @@ def check_overengineering(root: Path) -> list:
 
 def check_business(root: Path) -> list:
     issues = []
-    for p, text in _load_text(root).items():
+    for p in _source_files(root):
         rel = str(p.relative_to(root)).replace(os.sep, "/")
+        text = p.read_text(encoding="utf-8", errors="ignore")
         for i, line in enumerate(text.splitlines(), 1):
             stripped = line.strip()
             if stripped.startswith(("#", "//")):
                 continue
-            if MAGIC_NUMBER.search(stripped) and not re.search(r"\b(20\d\d|19\d\d)\b", stripped):
+            if not stripped:
+                continue
+            # 魔法数字（排除字符串/注释/日期/端口号）
+            code_part = STRING_REMOVE.sub("", stripped)
+            if MAGIC_NUMBER.search(code_part) and not re.search(r"\b(20\d\d|19\d\d|:?\d{5}\b|\d{1,5}\bport)", stripped):
                 issues.append(f"[business] {rel}:{i} 魔法数字(>4位)需命名常量: {stripped[:60]}")
-            for t in TOY_STRINGS:
-                if re.search(rf"['\"]\b{t}\b['\"]", stripped, re.IGNORECASE):
-                    issues.append(f"[business] {rel}:{i} 疑似演示字符串'{t}': {stripped[:60]}")
+            # 玩具字符串（排除 URL/路径）
+            for s in TOY_STRINGS:
+                if re.search(rf"['\"]\b{s}\b['\"]", stripped, re.IGNORECASE) and not re.search(r"/|\.|\:", stripped):
+                    issues.append(f"[business] {rel}:{i} 疑似演示字符串'{s}': {stripped[:60]}")
                     break
-        if "try" in text and "except" not in text and "catch" not in text:
+        # try 无 except/catch
+        if re.search(r"\btry\s*:", text) and not re.search(r"\b(except|catch)\b", text):
             issues.append(f"[business] {rel} try 无 except/catch（异常可能被吞）")
     return issues
+
+
+STRING_REMOVE = re.compile(r"['\"][^'\"]*['\"]")
 
 
 def scan(root: Path, checks: list) -> dict:

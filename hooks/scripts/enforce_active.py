@@ -116,6 +116,20 @@ def main():
         else:
             warns.append("CHANGELOG.md 缺失")
 
+        # ── 7. 防「AI 坏毛病」门禁（pragmatic-guard）─────────────
+        pg = root / "framework" / "lib" / "scripts" / "quality" / "pragmatic-guard.py"
+        if pg.exists():
+            pg_rc, pg_out = run_cmd([sys.executable, str(pg), "--project", str(root), "--json"], root)
+            if pg_rc != 0:
+                n_issues = "?"
+                try:
+                    n_issues = len(json.loads(pg_out).get("issues", []))
+                except Exception:  # noqa: BLE001
+                    pass
+                fails.append(f"pragmatic-guard FAIL（{n_issues} 个问题：重复造轮/冗余/虚假/过度设计/不合业务）")
+        else:
+            warns.append("pragmatic-guard.py 缺失（framework/lib/scripts/quality/）")
+
     # ── 输出 ─────────────────────────────────────────────────────
     if args.json:
         print(json.dumps({"root": str(root), "pass": not fails, "fails": fails, "warns": warns},

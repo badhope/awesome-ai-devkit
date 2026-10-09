@@ -62,6 +62,7 @@ post_task:
     - "监控仪表盘无异常告警"
     - "复盘报告有时间线和改进项"
     - "如有架构决策变更，ADR 已更新"
+    - "pragmatic-guard: python3 framework/lib/scripts/quality/pragmatic-guard.py --project . 退出 exit 0（修复后无占位/虚假实现）"
     - "loop-verification: 自动循环验证所有质量门禁，最多 2 轮"
   loop_config:
     max_loops: 2

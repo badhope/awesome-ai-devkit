@@ -74,6 +74,7 @@ post_task:
     - "性能无 regression（如有对比基准）"
     - "无新增安全漏洞"
     - "ADR 已更新"
+    - "pragmatic-guard: python3 framework/lib/scripts/quality/pragmatic-guard.py --project . 退出 exit 0（重构后无冗余/虚假/过度设计残留）"
     - "loop-verification: 自动循环验证所有质量门禁，最多 3 轮"
   loop_config:
     max_loops: 3

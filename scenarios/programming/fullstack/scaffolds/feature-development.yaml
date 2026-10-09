@@ -81,6 +81,7 @@ post_task:
     - "无安全硬编码泄露: grep 敏感词仅出现在 test/mock 中"
     - "CHANGELOG 已更新"
     - "memory-persistent 已更新（如有架构决策）"
+    - "pragmatic-guard: python3 framework/lib/scripts/quality/pragmatic-guard.py --project . 退出 exit 0（无重复造/冗余/虚假实现/过度设计/不合业务）"
     - "loop-verification: 自动循环验证所有质量门禁，最多 3 轮"
   loop_config:
     max_loops: 3

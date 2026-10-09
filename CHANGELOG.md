@@ -38,6 +38,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 挂进 coding adaptive-feature.yaml 的「代码审查」步骤与 post_task 门禁；coding-agent 审查阶段强制运行
 - framework 技能库 37→38；tests/test_pragmatic_guard.py 6 项单测（干净项目通过 / 各类坏毛病检出）
 
+### Added — pragmatic-guard 全量接入与精度优化
+- 挂进 fullstack 三个脚手架（feature-development/refactoring/incident-response）的 post_task 门禁
+- 加入 enforce_active.py 完工强制链（第 7 项门禁：pragmatic-guard exit 0 才通过）
+- 提高检测精度：排除 framework 层自身/测试/文档/示例目录、except:pass 不再误报、魔法数字排除字符串与端口/日期、收紧 return None 与空函数体正则——仓库自身扫描从 30+ 误报降为 0，坏项目仍精确检出
+
 ## [2.0.0] — 2026-10-09
 
 ### Added
