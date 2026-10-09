@@ -17,6 +17,9 @@ jobs:
         with:
           python-version: "3.12"
 
-      - run: pip install pyyaml --quiet
+      - run: pip install pyyaml pytest --quiet
 
       - run: python devkit-doctor.py
+
+      - name: Run tests
+        run: python -m pytest -q
