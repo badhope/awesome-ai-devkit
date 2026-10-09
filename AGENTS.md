@@ -15,7 +15,16 @@ Awesome AI DevKit 是一个**跨平台的场景化 AI 编程配置生态**。它
   `Rules` · `Roles` · `Skills` · `Tools` · `MCP` · `Agents` · `Expert` · `Workflows` · `Hooks` · `Context` · `Validation`
 - **专用场景层（Scenarios）**：基于框架的二次开发，把某个领域（如全栈、论文、金融）专用的角色、技能、团队配置进去。每个场景独立可组合。
 
-当前内置一个完整示例场景：`scenarios/programming/fullstack/`（全栈开发团队）。更多场景按需添加。
+通用能力的实体存放在 **`framework/`** 目录：
+
+- `framework/skills/` — 通用技能库（`agentskills.io` 标准 `SKILL.md`，33+ 个）
+- `framework/agents/` — 通用多角色团队（跨场景复用）
+- `framework/mcp/` — 通用 MCP 全集
+- `framework/rules/` — 通用规则（权威在根 `rules/`）
+
+`framework/` 是"从空白把能力拉满"的核心；`scenarios/` 只在上面补充领域专属。详见 [`framework/README.md`](framework/README.md)。
+
+当前内置一个完整示例场景：`scenarios/programming/fullstack/`（全栈开发团队，复用框架通用层）。更多场景按需添加。
 
 ---
 

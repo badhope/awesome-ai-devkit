@@ -15,6 +15,7 @@
 
 # ── Paths ─────────────────────────────────────────────────────────
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$RepoRoot  = Split-Path (Split-Path (Split-Path $ScriptDir -Parent) -Parent) -Parent
 $MCPConfig = Join-Path $ScriptDir "mcp\mcp-config.yaml"
 $ContextDir = Join-Path $ScriptDir "context"
 
@@ -122,10 +123,10 @@ Write-Host ""
 Write-Host "[4/4] 环境就绪检查..." -ForegroundColor White
 
 $FinalOK = $true
-$SkillCount = @(Get-ChildItem (Join-Path $ScriptDir "skills") -Directory -ErrorAction SilentlyContinue).Count
+$SkillCount = @(Get-ChildItem (Join-Path $RepoRoot "framework\skills") -Directory -ErrorAction SilentlyContinue).Count
 
 if (Test-Path $ProjectYaml) { Write-Ok "project.yaml" } else { Write-Err "project.yaml 不存在"; $FinalOK = $false }
-if (Test-Path (Join-Path $ScriptDir "skills")) { Write-Ok "skills/ ($SkillCount 个技能)" } else { Write-Err "skills/ 缺失"; $FinalOK = $false }
+if (Test-Path (Join-Path $RepoRoot "framework\skills")) { Write-Ok "skills/ ($SkillCount 个技能)" } else { Write-Err "framework/skills 缺失"; $FinalOK = $false }
 if (Test-Path (Join-Path $ScriptDir "scaffolds")) { Write-Ok "scaffolds/ (3 个工作流)" } else { Write-Warn "scaffolds/ 缺失" }
 
 Write-Host ""

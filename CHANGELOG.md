@@ -17,8 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - docs/requirements/devkit-doctor.md + docs/design/devkit-doctor.md
 - AGENTS.md — 跨平台统一指令（官方 AGENTS.md 标准，含平台自省声明）
 - platforms/ — 平台能力矩阵 + 自省机制（复用平台原生能力，不重复造轮子）
+- framework/ — 通用能力层（skills 通用技能库 33+ / agents 多角色 / mcp 全集）
+- framework/skills 新增 10 个通用技能：code-review、debugging、test-strategy、api-design、secret-scanner、performance-optimization、documentation-writing、architecture-design、requirements-analysis、commit-conventions
 
 ### Changed
+- 通用技能从 scenarios/programming/fullstack/skills 提升至 framework/skills（去重、解耦场景）
+- fullstack/lib 提升为 framework/lib（通用脚本库）
+- devkit-doctor.py 支持检查 framework/skills 通用技能层
+- bootstrap 检查 framework/skills
 - scaffold.yaml split sequential/parallel (YAML dup-key bug) → flat v2.0
 - platforms/ 重构：删除 17 个重复平台 README，改为单一平台能力矩阵 + 自省声明（复用平台原生能力）
 - AGENTS.md 增加平台自省机制（识别平台 → 用平台原生能力 → 只补缺失）

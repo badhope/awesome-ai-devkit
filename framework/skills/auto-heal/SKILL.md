@@ -232,7 +232,7 @@ loop-verification 通过以下接口调用 auto-heal：
 
 ```bash
 # 自动修复传入的失败列表
-bash lib/scripts/core/auto-heal.sh --issues <issues.json>
+bash framework/lib/scripts/core/auto-heal.sh --issues <issues.json>
 
 # issues.json 格式
 {
@@ -296,7 +296,7 @@ auto-heal 完成后输出修复报告：
 
 ```bash
 # 检测到 ESLint 错误
-$ bash lib/scripts/core/auto-heal.sh --project ./my-app
+$ bash framework/lib/scripts/core/auto-heal.sh --project ./my-app
 
 [auto-heal] 项目类型: Node.js (TypeScript)
 [auto-heal] 运行: npx eslint . --fix
@@ -310,7 +310,7 @@ $ bash lib/scripts/core/auto-heal.sh --project ./my-app
 
 ```bash
 # 检测到安全修复需要语义变更
-$ bash lib/scripts/core/auto-heal.sh --project ./my-app --issues issues.json
+$ bash framework/lib/scripts/core/auto-heal.sh --project ./my-app --issues issues.json
 
 [auto-heal] 项目类型: Python
 [auto-heal] 修复安全漏洞: SQL 注入 - 替换为参数化查询
@@ -324,7 +324,7 @@ $ bash lib/scripts/core/auto-heal.sh --project ./my-app --issues issues.json
 
 ```bash
 # 只检测不修复
-$ bash lib/scripts/core/auto-heal.sh --project ./my-app --dry-run
+$ bash framework/lib/scripts/core/auto-heal.sh --project ./my-app --dry-run
 
 [auto-heal] DRY RUN 模式（仅检测）
 [auto-heal] 项目类型: Go
@@ -340,7 +340,7 @@ $ bash lib/scripts/core/auto-heal.sh --project ./my-app --dry-run
 # Round 1: 门禁检查发现 2 项可自动修复
 $ python devkit-doctor.py --format json --root ./project > round1_result.json
 
-$ bash lib/scripts/core/auto-heal.sh --issues round1_result.json
+$ bash framework/lib/scripts/core/auto-heal.sh --issues round1_result.json
 [auto-heal] Round 1: 尝试修复 2 项
   → Lint (src/api.ts): eslint --fix → 已修复
   → Missing dep (zod): npm install zod → 已安装

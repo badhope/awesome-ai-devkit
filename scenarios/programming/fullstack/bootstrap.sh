@@ -130,8 +130,8 @@ echo -e "${BOLD}[4/4] 环境就绪检查...${NC}"
 FINAL_OK=true
 
 [[ -f "$CONTEXT_DIR/project.yaml" ]] && log_ok "project.yaml" || { log_err "project.yaml 不存在"; FINAL_OK=false; }
-SKILL_COUNT=$(find "$SCRIPT_DIR/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
-[[ -d "$SCRIPT_DIR/skills" ]] && log_ok "skills/ ($SKILL_COUNT 个技能)" || { log_err "skills/ 缺失"; FINAL_OK=false; }
+SKILL_COUNT=$(find "$PROJECT_ROOT/framework/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')
+[[ -d "$PROJECT_ROOT/framework/skills" ]] && log_ok "framework/skills ($SKILL_COUNT 个通用技能)" || { log_err "framework/skills 缺失"; FINAL_OK=false; }
 [[ -d "$SCRIPT_DIR/scaffolds" ]] && log_ok "scaffolds/ (3 个工作流)" || log_warn "scaffolds/ 缺失"
 
 echo ""

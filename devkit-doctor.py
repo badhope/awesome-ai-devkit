@@ -229,12 +229,15 @@ class SkillIntegrityCheck(BaseCheck):
 
     def run(self) -> CheckReport:
         report = CheckReport(self.name, self.description)
-        skills_dir = self.root / "scenarios" / "programming" / "fullstack" / "skills"
+        # 通用技能优先：框架层 framework/skills，其次场景 skills，再根 skills
+        skills_dir = self.root / "framework" / "skills"
+        if not skills_dir.exists():
+            skills_dir = self.root / "scenarios" / "programming" / "fullstack" / "skills"
         if not skills_dir.exists():
             skills_dir = self.root / "skills"
         if not skills_dir.exists():
             report.findings.append(Finding(CheckResult.FAIL, "skills/ 目录不存在",
-                                           "请确认项目根目录正确或创建 skills/"))
+                                           "请确认项目根目录正确或创建 framework/skills"))
             return report
 
         skill_dirs = sorted([d for d in skills_dir.iterdir() if d.is_dir()])
@@ -324,7 +327,9 @@ class ScaffoldValidityCheck(BaseCheck):
             report.findings.append(Finding(CheckResult.WARN, "未找到 scaffold yaml 文件"))
             return report
 
-        skills_dir = self.root / "scenarios" / "programming" / "fullstack" / "skills"
+        skills_dir = self.root / "framework" / "skills"
+        if not skills_dir.exists():
+            skills_dir = self.root / "scenarios" / "programming" / "fullstack" / "skills"
         valid_skills = {d.name for d in skills_dir.iterdir() if d.is_dir()} if skills_dir.exists() else set()
 
         errors = []
