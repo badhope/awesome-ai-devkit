@@ -1,0 +1,89 @@
+# ──────────────────────────────────────────────────────────────────
+# 通用编程 — 功能开发 Scaffold v2.0
+#
+# 用途：跨语言、跨技术栈的通用编码任务（脚本/CLI/库/服务/算法）。
+# 所有 skill 引用均来自通用层 framework/skills/（37 个通用技能）。
+#
+# 使用:
+#   cp scenarios/programming/coding/scaffolds/feature-development.yaml ./scaffold.yaml
+#   bash hooks/scripts/pre-task.sh scaffold.yaml
+#   # ... Agent 按 steps[] 执行 ...
+#   bash hooks/scripts/post-task.sh scaffold.yaml
+# ──────────────────────────────────────────────────────────────────
+
+version: "2.0"
+
+task:
+  name: "feature-development"
+  description: "通用功能开发：需求 → 方案 → 编码 → 测试 → 审查 → 提交"
+  type: feature
+  feature: "example-feature"   # <feature> 占位符值，scaffold-runner 会替换 outputs 中的路径
+
+memory:
+  - context/project.yaml
+  - context/architecture.md
+  - CHANGELOG.md
+
+steps:
+
+  # ── 阶段 1: 串行前置 ────────────────────────────────────
+  - goal: "需求澄清与验收标准"
+    description: "将模糊任务转化为可执行验收标准，明确技术栈与约束（跨语言通用）"
+    skills: [instruction-grooming, task-tracker]
+    outputs:
+      - docs/requirements/<feature>.md:
+          contains: [验收标准, 完成定义]
+
+  - goal: "方案设计与 ADR"
+    description: "确定实现方案、接口/数据结构，必要时记录架构决策"
+    skills: [architecture-design, project-health]
+    outputs:
+      - docs/design/feat-<feature>.md:
+          contains: [方案, 数据结构]
+      - context/architecture.md:
+          append: true
+          contains: [ADR]
+
+  # ── 阶段 2: 编码实现 ────────────────────────────────────
+  - goal: "编码实现 + 单元测试"
+    description: "按方案编写代码（语言无关），同步写单元测试覆盖核心路径"
+    skills: [debugging, linter-formatter]
+    outputs:
+      - src/<module>/<feature>.<ext>:
+          contains: [def, class, function, pub fn, func, fn]
+      - tests/test_<feature>.<ext>:
+          contains: [test_]
+    quality_gate: "单元测试全部通过"
+
+  # ── 阶段 3: 测试验证 ────────────────────────────────────
+  - goal: "全量测试与边界验证"
+    description: "运行全量测试，补充边界/异常用例，必要时做 loop 验证"
+    skills: [test-strategy, loop-verification]
+    quality_gate: "全量测试通过，边界用例覆盖"
+
+  # ── 阶段 4: 串行收尾 ────────────────────────────────────
+  - goal: "代码审查 + 安全检查"
+    description: "对照安全/审查技能自审：硬编码密钥、注入、越权、资源泄漏"
+    skills: [code-review, security-governance]
+    quality_gate: "无安全高危漏洞；无硬编码密钥；无资源泄漏"
+
+  - goal: "提交与文档交付"
+    description: "按提交规范提交，更新 CHANGELOG，记录到记忆"
+    skills: [git-workflow, commit-conventions, memory-persistent]
+    outputs:
+      - CHANGELOG.md:
+          append: true
+          contains: [feature]
+
+post_task:
+  quality_gates:
+    - "全量测试通过: 运行项目测试命令，所有 pass"
+    - "无硬编码密钥/凭证: grep 敏感词仅出现在 test/mock 中"
+    - "lint 无 error"
+    - "CHANGELOG 已更新"
+    - "ADR 已记录（如有架构决策）"
+    - "loop-verification: 自动循环验证所有质量门禁，最多 3 轮"
+  loop_config:
+    max_loops: 3
+    fail_threshold: 0
+    auto_fix: true

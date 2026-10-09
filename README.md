@@ -43,6 +43,15 @@ A complete product-to-operations pipeline: 11 universal roles (PM, Architect, Ba
 | Roles & Skills | `scenarios/programming/fullstack/` |
 | Quick start (included) | See below |
 
+### Universal Coding Scene *(included)*
+
+A cross-language, stack-agnostic coding foundation: covers the full "plan → code → test → refactor → commit" flow, reusing the 37 universal skills and 11 roles in `framework/`. Ideal for scripts, CLIs, libraries, algorithms, and any non-stack-specific task; can be inherited by fullstack, mobile, ml-native and other sub-scenes.
+
+| What | Path |
+|------|------|
+| Scene definition & scaffolds | `scenarios/programming/coding/` |
+| Coding lifecycle workflow | `scenarios/programming/coding/workflows/` |
+
 More scenarios (business-ops, data-engineering, ml-native, mobile, etc.) can be added — see [`scenarios/`](scenarios/) for the full list and contribution guide.
 
 ---

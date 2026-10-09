@@ -11,6 +11,7 @@ venv/
 .hook_cache/
 .catpaw_cache/
 logs/sessions/
+.temp/
 *.tmp
 *.swp
 .DS_Store

@@ -1,0 +1,68 @@
+# ──────────────────────────────────────────────────────────────────────
+# Awesome AI DevKit — Coding Project Context (Template)
+#
+# 1. Copy this file:  cp context/project.template.yaml context/project.yaml
+# 2. Fill in marked fields.
+# ──────────────────────────────────────────────────────────────────────
+
+# ── Identity ──────────────────────────────────────────────────────
+name: ""                          # REQUIRED: 项目名
+description: ""                  # REQUIRED: 一句话描述
+repository: ""                   # Git URL
+owner: ""                        # 团队 / org
+license: "MIT"
+
+framework_version: "2.0"         # Awesome DevKit framework version
+
+# ── Language / Stack（语言无关）─────────────────────────────
+stack:
+  language: "(not set)"          # Python | JavaScript/TypeScript | Go | Rust | Java | ...
+  runtime:  "(not set)"          # Node | Python3 | Go | JVM | ...
+  package_manager: "(not set)"   # pip | npm | pnpm | cargo | go mod | maven | ...
+  test_framework: "(not set)"    # pytest | jest | go test | cargo test | ...
+
+# ── 编码约定 ─────────────────────────────────────────────────
+coding_standards:
+  style: "(not set)"             # PEP8 | StandardJS | gofmt | rustfmt | ...
+  lint_tool: "(not set)"         # ruff | eslint | golangci-lint | clippy | ...
+  formatter: "(not set)"         # black | prettier | gofmt | rustfmt | ...
+
+# ── Agents authorized ─────────────────────────────────────────
+agents:
+  - id: "architect-system-designer"
+    name: "架构师"
+    allowed_scopes: ["read", "write"]
+  - id: "code-reviewer"
+    name: "代码审查"
+    allowed_scopes: ["read"]
+  - id: "test-qa-engineer"
+    name: "QA"
+    allowed_scopes: ["read", "write"]
+
+# ── Paths the Agent may touch ──────────────────────────────────────
+allowed_paths:
+  - "src/**"
+  - "tests/**"
+  - "scripts/**"
+  - "*.config.*"
+
+denied_paths:
+  - "secrets/**"
+  - ".env*"
+  - "node_modules/**"
+  - "__pycache__/**"
+
+# ── Scaffold 协议配置 ────────────────────────────────────────
+scaffold:
+  protocol_version: "2.0"
+  skills_base: "framework/skills"
+  roles_base: "scenarios/programming/coding/agents"
+  default_scaffolds:
+    feature: "scenarios/programming/coding/scaffolds/feature-development.yaml"
+    incident: "scenarios/programming/coding/scaffolds/incident-response.yaml"
+    refactoring: "scenarios/programming/coding/scaffolds/refactoring.yaml"
+  session_dir: "logs/sessions"
+  validation:
+    pre_task: true
+    post_task: true
+    fail_on_missing_skill: true

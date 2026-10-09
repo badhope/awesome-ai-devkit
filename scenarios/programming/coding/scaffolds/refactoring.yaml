@@ -1,0 +1,83 @@
+# ──────────────────────────────────────────────────────────────────
+# 通用编程 — 代码重构 Scaffold v2.0
+#
+# 用途：跨语言、跨技术栈的通用代码重构（性能优化/安全加固/架构调整）。
+#
+# 使用:
+#   cp scenarios/programming/coding/scaffolds/refactoring.yaml ./scaffold.yaml
+# ──────────────────────────────────────────────────────────────────
+
+version: "2.0"
+
+task:
+  name: "refactoring"
+  description: "代码重构：性能优化 / 安全加固 / 架构调整（语言无关）"
+  type: refactor
+
+memory:
+  - context/project.yaml
+  - context/architecture.md
+
+steps:
+
+  # ── 串行前置: 锁定范围 + 建立守护测试 ──────────────────
+  - goal: "重构范围锁定与风险评估"
+    description: "分析待重构模块影响面、依赖、风险等级（跨语言通用）"
+    skills: [project-health, integration-patterns]
+    outputs:
+      - docs/refactor/<scope>-scope.md:
+          contains: [重构范围, 风险评估]
+
+  - goal: "建立测试守护 (Golden Test)"
+    description: "写 characterization/snapshot 测试锁定当前行为，验证守护有效性"
+    skills: [scaffold-workflow, code-duplication]
+    outputs:
+      - tests/regression/test_<scope>_before.<ext>:
+          contains: [test_, snapshot]
+    quality_gate: "守护测试覆盖核心行为，且全部通过"
+
+  # ── 串行: 执行重构 ────────────────────────────────────
+  - goal: "执行重构"
+    description: "在守护测试保护下重构；每步一个 commit"
+    skills: [refactoring, linter-formatter]
+    outputs:
+      - src/<module>/<refactored>.<ext>
+    quality_gate: "所有守护测试仍然通过"
+
+  # ── 并行后置: 安全 + 性能 ─────────────────────────────
+  - goal: "安全审查"
+    description: "对照安全技能检查重构引入的潜在漏洞"
+    parallel: true
+    skills: [security-governance]
+    quality_gate: "无新增安全高危漏洞"
+
+  - goal: "性能基准对比"
+    description: "性能敏感路径做基线对比 (P95/P99, 内存, QPS)"
+    parallel: true
+    skills: [performance-optimization, devkit-infra]
+    outputs:
+      - docs/perf/<scope>-benchmark.md:
+          contains: [P95, 基线对比]
+
+  # ── 串行: 收尾 ────────────────────────────────────────
+  - goal: "文档 + ADR 更新"
+    description: "记录重构决策到 ADR，更新变更日志与迁移说明"
+    skills: [memory-persistent, git-workflow]
+    outputs:
+      - context/architecture.md:
+          append: true
+          contains: [ADR]
+      - docs/refactor/<scope>-summary.md:
+          contains: [变更列表, 向后兼容]
+
+post_task:
+  quality_gates:
+    - "所有测试通过（含回归守护测试）"
+    - "性能无 regression（如有对比基准）"
+    - "无新增安全漏洞"
+    - "ADR 已更新"
+    - "loop-verification: 自动循环验证所有质量门禁，最多 3 轮"
+  loop_config:
+    max_loops: 3
+    fail_threshold: 0
+    auto_fix: true

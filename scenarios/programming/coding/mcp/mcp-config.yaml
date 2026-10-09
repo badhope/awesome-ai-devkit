@@ -1,0 +1,121 @@
+# ============================================================
+# Coding（通用编程）项目 — MCP Server 配置
+# ============================================================
+# 通用编程场景：跨语言、跨技术栈。默认只启用「任何编码任务都需要」的服务，
+# 其余按需开启（避免资源浪费与密钥暴露）。完整全集见 framework/mcp/。
+#
+# 使用：
+#   awesome-devkit mcp load --config mcp-config.yaml
+# ============================================================
+
+version: "1.0"
+project_type: coding
+project_root: "."
+
+servers:
+  # ----------------------------------------------------------
+  #  文件系统与代码（任何语言必需）
+  # ----------------------------------------------------------
+  filesystem:
+    enabled: true
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "${PROJECT_ROOT:-.}"
+    description: "本地文件系统读写（代码、配置、文档）"
+
+  # ----------------------------------------------------------
+  #  版本控制（任何项目必需）
+  # ----------------------------------------------------------
+  git:
+    enabled: true
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-git"
+      - "--repo"
+      - "${PROJECT_ROOT:-.}"
+    description: "Git 操作（diff、log、blame、分支管理）"
+
+  github:
+    enabled: true
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-github"
+    env:
+      GITHUB_PERSONAL_ACCESS_TOKEN: "${GITHUB_TOKEN}"
+    description: "GitHub Issues、PR、CI 状态查询"
+
+  # ----------------------------------------------------------
+  #  Web 搜索（技术查询 / 最佳实践）
+  # ----------------------------------------------------------
+  brave-search:
+    enabled: true
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-brave-search"
+    env:
+      BRAVE_API_KEY: "${BRAVE_API_KEY}"
+    description: "网页搜索（文档、报错、最佳实践）"
+
+  # ----------------------------------------------------------
+  #  按需启用（视项目技术栈）
+  # ----------------------------------------------------------
+  postgres:
+    enabled: false
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-postgres"
+      - "${DATABASE_URL}"
+    description: "PostgreSQL 查询与 Schema 浏览（有 DB 时开启）"
+
+  playwright:
+    enabled: false
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-playwright"
+      - "--headless"
+    description: "无头浏览器自动化（需要 E2E/截图时开启）"
+
+  docker:
+    enabled: false
+    command: npx
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-docker"
+    description: "Docker 容器与镜像（容器化项目时开启）"
+
+# ============================================================
+#  全局设置
+# ============================================================
+settings:
+  auto_restart: true
+  restart_max_attempts: 3
+  restart_delay_ms: 1000
+
+  log_level: info
+
+  # 安全：允许访问的路径（按项目语言调整）
+  filesystem_allow:
+    - "./src"
+    - "./lib"
+    - "./tests"
+    - "./docs"
+    - "./scripts"
+    - "README.md"
+    - "*.config.*"
+
+  # 安全：禁止访问的路径
+  filesystem_block:
+    - ".env"
+    - ".env.production"
+    - "secrets/"
+    - "*.key"
+    - "*.pem"
+    - "node_modules/"
+    - ".git/"

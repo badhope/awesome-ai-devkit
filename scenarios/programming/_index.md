@@ -31,6 +31,7 @@ target_users: [全栈工程师, 移动端工程师, 工具链开发者]
 
 | 子场景 | 说明 | 入口 |
 |--------|------|------|
+| coding | **通用编程底座**（跨语言/技术栈，规划→编码→测试→提交；可被其他子场景继承） | `scenarios/programming/coding/` |
 | fullstack | Web 全栈应用（前后端 + 数据库 + 部署） | `scenarios/programming/fullstack/` |
 | mobile | iOS / Android / 跨平台 | `scenarios/programming/mobile/` |
 | ml-native | AI 原生应用（LLM Agent、RAG、Copilot） | `scenarios/programming/ml-native/` |
@@ -52,3 +53,5 @@ after_tool_call:  [log-writer, cache-write, metrics-push]
 on_agent_start:   [context-loader, env-check]
 on_agent_error:  [alert-dispatcher]
 ```
+
+> AI生成

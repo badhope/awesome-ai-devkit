@@ -9,6 +9,7 @@
 ```
 scenarios/
 ├── programming/          # 编程开发 ← 当前主战场
+│   ├── coding/           # 通用编程底座（跨语言，可被其他子场景继承）
 │   ├── fullstack/        # Web 全栈
 │   ├── mobile/           # 移动 App
 │   ├── ml-native/        # AI 原生应用
@@ -87,3 +88,5 @@ hooks:
   - 复用 `programming/fullstack/` 中的前端/后端 agent
   - 额外引入 `programming/ml-native/` 的 ml-engineer
   - 可选引入 `data-engineering/` 的数据处理技能
+
+> AI生成

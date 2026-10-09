@@ -43,6 +43,15 @@ Awesome AI DevKit 是一个跨平台的**场景化** AI 编程配置仓库。每
 | 角色与技能 | `scenarios/programming/fullstack/` |
 | 快速开始（内置） | 见下方 |
 
+### 通用编程开发 *(内置)*
+
+跨语言、跨技术栈的**通用编码底座**：覆盖「规划 → 编码 → 测试 → 重构 → 提交」全流程，复用 `framework/` 的 37 个通用技能与 11 个角色，适合脚本/CLI/库/算法等任意编码任务，也可被 fullstack/mobile/ml-native 等子场景继承。
+
+| 内容 | 路径 |
+|------|------|
+| 场景定义与脚手架 | `scenarios/programming/coding/` |
+| 编码生命周期工作流 | `scenarios/programming/coding/workflows/` |
+
 更多场景（业务运营、数据工程、ML、移动端等）可按需添加 — 参见 [`scenarios/`](scenarios/) 了解完整列表和贡献指南。
 
 ---

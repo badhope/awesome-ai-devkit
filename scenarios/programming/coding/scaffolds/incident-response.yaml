@@ -1,0 +1,70 @@
+# ──────────────────────────────────────────────────────────────────
+# 通用编程 — 故障响应 Scaffold v2.0
+#
+# 用途：跨语言、跨技术栈的故障排查与修复（脚本/服务/库均适用）。
+#
+# 使用:
+#   cp scenarios/programming/coding/scaffolds/incident-response.yaml ./scaffold.yaml
+# ──────────────────────────────────────────────────────────────────
+
+version: "2.0"
+
+task:
+  name: "incident-response"
+  description: "故障响应：检测 → 止损 → 修复 → 验证 → 复盘（语言无关）"
+  type: incident
+
+memory:
+  - context/project.yaml
+  - context/architecture.md
+
+steps:
+  # 故障处理必须严格串行，不能并行
+  - goal: "检测与分级"
+    description: "确认故障现象、影响范围、严重等级"
+    skills: [project-health, debugging]
+    outputs:
+      - docs/incidents/<id>-triage.md:
+          contains: [严重等级, 影响范围]
+
+  - goal: "止损 / 降级"
+    description: "执行回滚或降级，先恢复再查根因"
+    skills: [git-workflow, devkit-infra]
+    outputs:
+      - docs/incidents/<id>-mitigation.md:
+          contains: [回滚, 降级]
+
+  - goal: "定位与修复"
+    description: "读日志、diff 最近提交、定位根因，写回归测试 + 修复"
+    skills: [debugging, code-duplication]
+    outputs:
+      - src/<module>/<fix>.<ext>
+      - tests/regression/test_<issue>.<ext>:
+          contains: [test_]
+    quality_gate: "回归测试覆盖修复场景，测试通过"
+
+  - goal: "验证恢复"
+    description: "确认问题消失，相关测试与检查通过"
+    skills: [project-health, loop-verification]
+    outputs:
+      - docs/incidents/<id>-verified.md:
+          contains: [已恢复]
+    quality_gate: "相关测试通过"
+
+  - goal: "复盘报告"
+    description: "记录时间线、根因、改进项"
+    skills: [memory-persistent, task-tracker]
+    outputs:
+      - docs/incidents/<id>-postmortem.md:
+          contains: [时间线, 根因, 改进项]
+
+post_task:
+  quality_gates:
+    - "回归测试全部通过"
+    - "复盘报告有时间线和改进项"
+    - "如有架构决策变更，ADR 已更新"
+    - "loop-verification: 自动循环验证所有质量门禁，最多 2 轮"
+  loop_config:
+    max_loops: 2
+    fail_threshold: 0
+    auto_fix: true

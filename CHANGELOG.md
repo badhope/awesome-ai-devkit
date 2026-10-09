@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- scenarios/programming/coding — 通用编程底座场景（跨语言/技术栈）：_index、coding-agent、3 个通用脚手架（feature-development/refactoring/incident-response）、coding-lifecycle 工作流、project 上下文、mcp 配置
+- framework/skills 新增 4 个通用技能：planning、refactoring、observability、session-continuation（通用技能库达 37）
+- 同步 README/README_zh/docs/experts 技能计数至 37，并将 coding 场景登记进场景索引
+
+### Fixed
+- scaffold-runner：修复 scaffold 模板路径占位符（`<feature>`/`<module>`/`<ext>`）未替换导致的产物门禁误判缺失（影响 coding/fullstack 场景）；支持 `--feature` 覆盖与 glob 模糊匹配，并新增回归测试
+
 ## [2.0.0] — 2026-10-09
 
 ### Added

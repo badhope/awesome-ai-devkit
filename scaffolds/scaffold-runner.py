@@ -108,12 +108,14 @@ def build_step_prompt(
     project_root: str,
     skills_dir: Path,
     prev_errors: str = "",
+    vars: Optional[dict] = None,
 ) -> str:
     goal = step.get("goal", "")
     description = step.get("description", "")
     skills = step.get("skills", [])
     outputs = step.get("outputs", [])
     quality_gate = str(step.get("quality_gate", ""))
+    vars = vars or {}
 
     # 读取引用的 skill 全文
     skill_sections = []
@@ -126,18 +128,24 @@ def build_step_prompt(
                 content = content[:3000] + "\n... (truncated)"
             skill_sections.append(f"## Skill: {skill_id}\n\n{content}")
 
-    # 格式化 outputs
+    # 格式化 outputs（替换 <var> 占位符）
     output_lines = []
     for out in outputs:
         if isinstance(out, dict):
             for path, criteria in out.items():
-                must_contain = criteria.get("must_contain", []) if isinstance(criteria, dict) else []
-                line = f"- `{path}`"
+                resolved = path
+                for k, v in vars.items():
+                    resolved = resolved.replace(f"<{k}>", v)
+                must_contain = criteria.get("contains", []) if isinstance(criteria, dict) else []
+                line = f"- `{resolved}`"
                 if must_contain:
                     line += f" — must contain: {', '.join(must_contain)}"
                 output_lines.append(line)
         elif isinstance(out, str):
-            output_lines.append(f"- `{out}`")
+            resolved = out
+            for k, v in vars.items():
+                resolved = resolved.replace(f"<{k}>", v)
+            output_lines.append(f"- `{resolved}`")
 
     parts = [
         f"# Step: {goal}",
@@ -299,30 +307,66 @@ def git_commit_step(project_root: Path, msg: str) -> bool:
         return False
 
 
-def step_outputs_gate(outputs: list, project_root: Path) -> list[str]:
-    """逐步强制：校验本步产出物文件存在 + contains 关键词。返回缺失/不满足清单。"""
+def step_outputs_gate(outputs: list, project_root: Path, vars: Optional[dict] = None) -> list[str]:
+    """逐步强制：校验本步产出文件存在 + contains 关键词。返回缺失/不满足清单。
+
+    路径中的 <占位符> 会先按 vars 替换；仍未替换的占位符（如 <module>、<ext>）
+    视为 glob 通配符做模糊匹配，避免因模板占位符未穷举而误判产物缺失。
+    """
+    import glob as _glob
+
+    vars = vars or {}
     problems: list[str] = []
+
+    def _resolve(path: str) -> list:
+        """返回：完全匹配则 [path]，存在未替换占位符则 glob 匹配列表，否则空列表。"""
+        resolved = path
+        for k, v in vars.items():
+            resolved = resolved.replace(f"<{k}>", v)
+        if "<" in resolved and ">" in resolved:
+            # 仍有未替换占位符 → 转 glob 模式（<name> → *）
+            pattern = ""
+            i = 0
+            while i < len(resolved):
+                if resolved[i] == "<":
+                    j = resolved.find(">", i)
+                    if j == -1:
+                        pattern += resolved[i:]
+                        break
+                    pattern += "*"
+                    i = j + 1
+                else:
+                    pattern += resolved[i]
+                    i += 1
+            return [p for p in _glob.glob(str(project_root / pattern), recursive=True)
+                    if (project_root / p).is_file()]
+        return [resolved] if (project_root / resolved).exists() else []
+
     for out in outputs:
         if isinstance(out, str):
-            p = project_root / out
-            if not p.exists():
+            matches = _resolve(out)
+            if not matches:
                 problems.append(f"missing: {out}")
         elif isinstance(out, dict):
             for path, criteria in out.items():
-                p = project_root / path
-                if not p.exists():
+                matches = _resolve(path)
+                if not matches:
                     problems.append(f"missing: {path}")
                     continue
                 if isinstance(criteria, dict):
                     contains = criteria.get("contains", [])
                     if contains:
-                        try:
-                            text = p.read_text(encoding="utf-8", errors="ignore")
-                        except Exception:  # noqa: BLE001
-                            text = ""
-                        for kw in contains:
-                            if kw not in text:
-                                problems.append(f"{path} 缺含: {kw}")
+                        checked_any = False
+                        for m in matches:
+                            try:
+                                text = (project_root / m).read_text(encoding="utf-8", errors="ignore")
+                            except Exception:  # noqa: BLE001
+                                text = ""
+                            checked_any = True
+                            if all(kw in text for kw in contains):
+                                break
+                        else:
+                            problems.append(f"{path} 缺含: {', '.join(contains)}")
     return problems
 
 
@@ -351,7 +395,7 @@ def group_steps(steps: list[dict]) -> list[tuple[str, list[int]]]:
 # ── 主流程 ───────────────────────────────────────────────────────────
 
 def run_scaffold(scaffold_path: str, provider: str, dry_run: bool,
-                 auto_commit: bool, project_root: Path) -> int:
+                 auto_commit: bool, project_root: Path, feature: str = "") -> int:
 
     scaffold_file = Path(scaffold_path)
     if not scaffold_file.exists():
@@ -363,6 +407,9 @@ def run_scaffold(scaffold_path: str, provider: str, dry_run: bool,
     task = data.get("task", {})
     task_name = task.get("name", "unknown")
     raw_steps = data.get("steps", [])
+
+    # 占位符变量：<feature> 等模板路径替换为真实值（取自 task 或 CLI）
+    vars: dict = {"feature": feature, "module": feature, "ext": "py"}
 
     if not raw_steps:
         print("[ERROR] no steps defined in scaffold")
@@ -415,7 +462,7 @@ def run_scaffold(scaffold_path: str, provider: str, dry_run: bool,
                 step = raw_steps[idx]
                 result = StepResult(f"step-{step_counter:02d}", step.get("goal", ""))
                 prompt = build_step_prompt(step, task, str(project_root), skills_dir,
-                                           prev_errors="\n".join(errors_history[-2:]))
+                                           prev_errors="\n".join(errors_history[-2:]), vars=vars)
                 print(f"  [{step_counter}/{len(raw_steps)}] (parallel) {step.get('goal', '')}")
                 if dry_run:
                     prompt_path = session.session_dir / f"step-{step_counter:02d}-prompt.md"
@@ -437,7 +484,7 @@ def run_scaffold(scaffold_path: str, provider: str, dry_run: bool,
 
                 if dry_run:
                     prompt = build_step_prompt(step, task, str(project_root), skills_dir,
-                                               prev_errors="\n".join(errors_history[-2:]))
+                                               prev_errors="\n".join(errors_history[-2:]), vars=vars)
                     prompt_path = session.session_dir / f"step-{step_counter:02d}-prompt.md"
                     prompt_path.write_text(prompt, encoding="utf-8")
                     print(f"  (dry-run) prompt → {prompt_path.relative_to(project_root)}")
@@ -449,13 +496,13 @@ def run_scaffold(scaffold_path: str, provider: str, dry_run: bool,
                 for attempt in range(1, 4):
                     result.attempts = attempt
                     prompt = build_step_prompt(step, task, str(project_root), skills_dir,
-                                               prev_errors="\n".join(errors_history[-2:]))
+                                               prev_errors="\n".join(errors_history[-2:]), vars=vars)
                     print(f"  Attempt {attempt}/3...")
                     ok, output, err = call_agent(prompt, provider, project_root)
                     result.agent_output = output
                     if ok:
                         # 逐步强制：校验本 step 的产出物（文件存在 + contains）
-                        gate_errors = step_outputs_gate(step.get("outputs", []), project_root)
+                        gate_errors = step_outputs_gate(step.get("outputs", []), project_root, vars)
                         if gate_errors:
                             result.error_output = "\n".join(gate_errors)
                             errors_history.append(f"[{goal}] outputs 未满足: {'; '.join(gate_errors[:3])}")
@@ -522,14 +569,32 @@ def main():
     parser.add_argument("--auto-commit", action="store_true",
                         help="Auto git commit after each successful step")
     parser.add_argument("--root", default=".", help="Project root directory")
+    parser.add_argument("--feature", default="",
+                        help="Feature/module name used to substitute <feature> in scaffold outputs")
 
     args = parser.parse_args()
+
+    # feature 推断顺序：--feature > task.feature > scaffold 文件名（去掉扩展名与前置目录）
+    scaffold_path = args.scaffold
+    data = None
+    if Path(scaffold_path).exists():
+        try:
+            data = yaml.safe_load(Path(scaffold_path).read_text(encoding="utf-8"))
+        except Exception:
+            data = None
+    feature = args.feature
+    if not feature and data:
+        feature = str(data.get("task", {}).get("feature", "") or "")
+    if not feature:
+        feature = Path(scaffold_path).stem
+
     sys.exit(run_scaffold(
-        scaffold_path=args.scaffold,
+        scaffold_path=scaffold_path,
         provider=args.provider,
         dry_run=args.dry_run,
         auto_commit=args.auto_commit,
         project_root=Path(args.root).resolve(),
+        feature=feature,
     ))
 
 

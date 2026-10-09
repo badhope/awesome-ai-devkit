@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "session_id": "",
+  "started_at": "",
+  "task": "",
+  "scaffold": "",
+  "provider": "opencode",
+  "steps_completed": [],
+  "artifacts": [],
+  "quality_gate_results": {},
+  "ended_at": "",
+  "status": "running"
+}
