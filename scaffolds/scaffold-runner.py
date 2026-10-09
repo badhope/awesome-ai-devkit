@@ -255,15 +255,19 @@ def _call_custom(prompt: str, cmd: str, project_root: Path) -> tuple[bool, str, 
 
 
 def _call_opencode(prompt: str, project_root: Path) -> tuple[bool, str, str]:
-    """调用 opencode CLI（跨平台通用）—— 自动读取 AGENTS.md 与 framework skills"""
+    """调用 opencode CLI（跨平台）—— prompt 经 stdin 传入，避免 Windows cmd 引号问题"""
+    import shutil
+    found = shutil.which("opencode")
+    if not found:
+        return False, "", "opencode CLI not found. Install: npm i -g opencode-ai"
+    # Windows 上 opencode 常为 .cmd/.ps1 shim，经 cmd /c 执行；prompt 走 stdin
+    if os.name == "nt" and not found.lower().endswith(".exe"):
+        argv = ["cmd", "/c", "opencode", "run", "--auto"]
+    else:
+        argv = [found, "run", "--auto"]
     try:
-        result = subprocess.run(
-            ["opencode", "run", "--auto", prompt],
-            cwd=str(project_root),
-            capture_output=True,
-            text=True,
-            timeout=600,
-        )
+        result = subprocess.run(argv, input=prompt, cwd=str(project_root),
+                                capture_output=True, text=True, timeout=600)
         output = result.stdout + result.stderr
         if result.returncode == 0 or "DONE" in output:
             return True, output, ""
