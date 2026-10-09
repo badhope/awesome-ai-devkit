@@ -20,8 +20,8 @@
 
 ## 使用方式
 
-- 完整定义见 `scenarios/programming/fullstack/agents/*.md`（作为通用团队的参考实现）。
-- 场景复用：scaffold 的 step 里用对应角色/技能，或加载 `scenarios/<场景>/agents/`。
+- 完整定义在 `framework/agents/*.md`（已提升为框架级通用角色）。
+- 场景复用：scaffold 的 step 里用对应角色/技能名即可，无需在每个场景重复定义。
 - 平台加载：按各平台官方机制（AGENTS.md / Skills / subagents）注册这些角色。
 
 ## 原则

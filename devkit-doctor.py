@@ -602,7 +602,9 @@ class AgentToolsCheck(BaseCheck):
 
     def run(self) -> CheckReport:
         report = CheckReport(self.name, self.description)
-        agents_dir = self.root / "scenarios" / "programming" / "fullstack" / "agents"
+        agents_dir = self.root / "framework" / "agents"
+        if not agents_dir.exists():
+            agents_dir = self.root / "scenarios" / "programming" / "fullstack" / "agents"
         if not agents_dir.exists():
             agents_dir = self.root / "agents"
         if not agents_dir.exists():
