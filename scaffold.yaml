@@ -21,21 +21,21 @@ steps:
   # ── 阶段 1: 串行前置 ────────────────────────────────────
   - goal: "需求分析与验收标准"
     description: "将模糊需求转化为可测试的验收标准"
-    skills: [project-management]
+    skills: [instruction-grooming, task-tracker]
     outputs:
       - docs/requirements/<feature>.md:
           contains: [验收标准]
 
   - goal: "技术方案设计"
     description: "API / 数据模型 / 变更范围"
-    skills: [backend-architecture, api-design]
+    skills: [integration-patterns, project-health]
     outputs:
       - docs/design/<feature>.md
 
   # ── 阶段 2: 并行实现 ────────────────────────────────────
   - goal: "后端实现"
     parallel: true
-    skills: [api-design, auth-implementation]
+    skills: [devkit-infra, devkit-utilities]
     outputs:
       - src/api/<feature>/<controller>.py:
           contains: [router, service]
@@ -43,18 +43,18 @@ steps:
 
   - goal: "前端实现"
     parallel: true
-    skills: [design-system, state-management]
+    skills: [linter-formatter, web-browser-vision]
     outputs:
       - frontend/app/<feature>/page.tsx
     quality_gate: "前端 build 无 error"
 
   # ── 阶段 3: 串行后置 ────────────────────────────────────
   - goal: "集成测试"
-    skills: [test-strategy]
+    skills: [code-duplication, mutation-testing]
     quality_gate: "集成测试全部通过，核心 E2E 通过"
 
   - goal: "代码自审 + 发布"
-    skills: [security]
+    skills: [security-governance, semantic-release]
     quality_gate: "无安全高危漏洞；CHANGELOG 已更新"
 
 post_task:
