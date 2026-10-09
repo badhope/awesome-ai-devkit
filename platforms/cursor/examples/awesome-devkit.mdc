@@ -1,0 +1,23 @@
+---
+description: Awesome AI DevKit 统一规则（跨平台 AGENTS.md 派生）
+globs: **/*
+alwaysApply: true
+---
+
+# Awesome AI DevKit 核心规则（Cursor）
+
+权威统一指令见仓库根 `AGENTS.md`。以下是适用于 Cursor 的核心约束摘要：
+
+## 编码规范（详见 rules/coding-standards.md）
+- TS：`camelCase` 变量、`PascalCase` 类、禁止 `any`、`async/await`
+- Python：`snake_case`、公共函数必带类型注解、Pydantic 校验
+- 函数 ≤50 行、≤3 参数；单一职责
+
+## 工程实践
+- 先读后写；配置即代码（YAML/Markdown）
+- 质量门禁：`python devkit-doctor.py` + `python -m pytest -q`
+- 安全：禁硬编码密钥、禁个人绝对路径、参数化 SQL
+- 提交：Conventional Commits
+
+## 场景加载
+- 全栈场景：读取 `context/project.yaml` → 按 `scaffolds/*.yaml` 执行

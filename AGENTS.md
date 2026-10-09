@@ -1,0 +1,94 @@
+# AGENTS.md
+
+> **跨平台统一指令（AGENTS.md）** — 本文件是 Awesome AI DevKit 仓库面向**所有 AI 编码 Agent** 的权威说明书。
+> `AGENTS.md` 是被 Cursor、Claude Code、OpenAI Codex、Gemini CLI、GitHub Copilot、Cline 等主流工具**官方支持**的跨平台指令标准（Anthropic 与 OpenAI 均已采用），用于替代各平台各自维护的 `.cursorrules` / `CLAUDE.md` / `AGENT.md` 碎片化配置。
+>
+> 放到本仓库根目录，任何支持 AGENTS.md 的工具打开本目录都会自动读取并生效。
+
+---
+
+## 1. 本仓库是什么
+
+Awesome AI DevKit 是一个**跨平台的场景化 AI 编程配置生态**。它分为两层：
+
+- **通用框架层（Framework）**：11 层通用能力，跨领域复用，与具体业务无关。
+  `Rules` · `Roles` · `Skills` · `Tools` · `MCP` · `Agents` · `Expert` · `Workflows` · `Hooks` · `Context` · `Validation`
+- **专用场景层（Scenarios）**：基于框架的二次开发，把某个领域（如全栈、论文、金融）专用的角色、技能、团队配置进去。每个场景独立可组合。
+
+当前内置一个完整示例场景：`scenarios/programming/fullstack/`（全栈开发团队）。更多场景按需添加。
+
+---
+
+## 2. 关键原则（适用于所有助手）
+
+1. **先读后写**：修改任何文件前先读取现有内容与结构，不做无关改动。
+2. **区分框架与场景**：通用能力放框架层，领域专用内容放对应场景目录，不要混放。
+3. **质量门禁**：提交前通过 `python devkit-doctor.py` 与 `python -m pytest -q`。
+4. **配置即代码**：角色、技能、工作流、钩子、MCP 都是 YAML/Markdown 配置，遵循 schema 与既有范例。
+5. **安全底线**：禁止硬编码密钥；使用 `${VAR}` 占位；禁止提交个人绝对路径（`/Users/...`、`C:\Users\...`、`/mnt/...`）。
+
+---
+
+## 3. 编码规范
+
+详细的按语言规范见 `rules/coding-standards.md`，核心约定：
+
+| 维度 | 约定 |
+|------|------|
+| 命名 | 变量/函数 `camelCase`（TS）/`snake_case`（Py）；类 `PascalCase`；常量 `UPPER_SNAKE` |
+| 类型 | TS 禁止 `any`；Python 公共函数必须有类型注解（3.10+ 用 `X \| None`） |
+| 函数 | ≤50 行；≤3 参数（多则用 options 对象）；单一职责、纯函数优先 |
+| 错误 | 不吞异常；结构化错误 + `request_id`；边界处校验输入 |
+| 日志 | JSON 格式；禁止生产环境 `console.log` / `print` |
+| 数据库 | 参数化查询（禁拼接 SQL）；变更走 migration；软删除 `deleted_at` |
+| API | RESTful；资源复数；正确状态码；OpenAPI 文档；版本化 |
+| 测试 | 业务逻辑全覆盖；AAA 模式；mock 外部依赖；覆盖率 ≥80% |
+
+---
+
+## 4. 工作方式（框架能力）
+
+- **角色（Agents）**：`scenarios/<场景>/agents/*.md` 定义角色（frontmatter：`name`/`description`/`tools`）。按需调用对应角色。
+- **技能（Skills）**：`scenarios/<场景>/skills/<name>/SKILL.md` 定义可复用技能模块（frontmatter 含 `name`/`description`）。通过 `skills:` 在 scaffold 中引用。
+- **工作流（Scaffolds）**：`scaffolds/*.yaml` 定义多步骤开发协议（`version: "2.0"`），含 `steps`、`parallel`、`outputs`、`quality_gate`。复制一个既有 scaffold 改造成新流程。
+- **钩子（Hooks）**：`hooks/config.yaml` 绑定生命周期脚本（`pre-task` / `post-task` / `middleware`）。
+- **上下文（Context）**：`context/project.yaml` 记录项目元数据；`context/architecture.md` 记录 ADR。
+- **MCP**：`scenarios/<场景>/mcp/mcp-config.yaml` 声明 MCP server；启用 `enabled: true` 的服务。连接统一走官方 **MCP**（Model Context Protocol，Linux Foundation 托管开放标准）。
+
+---
+
+## 5. 质量与安全门禁
+
+- 提交前运行 `python devkit-doctor.py`（检查 skills/scaffolds/mcp/hooks/agents/json/docs/git/env）。
+- 运行 `python -m pytest -q` 保证测试通过。
+- 变更遵循 Conventional Commits：`feat:` `fix:` `docs:` `chore:` `ci:`。
+- CHANGELOG 遵循 Keep a Changelog；版本遵循 Semantic Versioning。
+- 不得提交 `.env`、密钥、`node_modules/`、`__pycache__/` 等（见 `.gitignore`）。
+
+---
+
+## 6. 平台适配
+
+本仓库为**所有主流 AI 编码平台**提供官方格式的接入层，见 `platforms/` 与 `docs/PLATFORMS.md`。通用原则：
+
+- **统一指令**：以本 `AGENTS.md` 为权威，各平台配置生成/指向它，避免多份重复维护。
+- **工具连接**：统一走 **MCP**。
+- **场景加载**：各平台按其官方插件/规则机制加载 `scenarios/`。
+
+---
+
+## 7. 快速上手（维护者用）
+
+```bash
+# 健康检查
+python devkit-doctor.py
+
+# 测试
+python -m pytest -q
+
+# 初始化一个场景
+bash   scenarios/programming/fullstack/bootstrap.sh   # macOS/Linux
+powershell -File scenarios/programming/fullstack/bootstrap.ps1   # Windows
+```
+
+> AI生成

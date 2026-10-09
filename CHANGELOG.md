@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - scenarios/programming/fullstack/{bootstrap.sh,bootstrap.ps1}
 - context/architecture.md (ADR-001)
 - docs/requirements/devkit-doctor.md + docs/design/devkit-doctor.md
+- AGENTS.md — 跨平台统一指令（官方 AGENTS.md 标准）
+- platforms/ — 17+ 主流平台官方格式接入层（Claude Code / Cursor / Codex / Gemini / Copilot / Cline / Windsurf / 通义 / MarsCode / Kimi / Trae / Comate / CodeGeeX / Zed / Continue / Aider / JetBrains）
+- docs/PLATFORMS.md — 平台×协议支持矩阵
 
 ### Changed
 - scaffold.yaml split sequential/parallel (YAML dup-key bug) → flat v2.0
