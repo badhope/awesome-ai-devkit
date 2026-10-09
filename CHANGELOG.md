@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - framework/skills 新增 10 个通用技能：code-review、debugging、test-strategy、api-design、secret-scanner、performance-optimization、documentation-writing、architecture-design、requirements-analysis、commit-conventions
 
 ### Changed
+- scaffold-runner：新增 opencode provider、每步强制产物校验（outputs gate）、完工强制门禁（enforce_active）、skills 路径指向 framework 通用层
+- .gitignore 忽略 logs/sessions/（session 产物不入库）
 - 新增 hooks/scripts/enforce_active.py 强制门禁（机制层，跨平台）：上下文/doctor/测试/密钥/CHANGELOG 校验
 - hooks/config.yaml 挂载开工（--pre）与完工强制门禁
 - AGENTS.md / platforms/README 增加「提示层 vs 机制层」分层说明与按平台强制接入

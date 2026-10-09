@@ -10,8 +10,7 @@ venv/
 # ── Runtime / Temporary ───────────────────────────────
 .hook_cache/
 .catpaw_cache/
-logs/sessions/*.jsonl
-logs/sessions/*.log
+logs/sessions/
 *.tmp
 *.swp
 .DS_Store

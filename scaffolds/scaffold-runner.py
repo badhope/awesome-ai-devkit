@@ -192,6 +192,8 @@ def call_agent(prompt: str, provider: str, project_root: Path) -> tuple[bool, st
         return _call_claude(prompt, project_root)
     elif provider == "cursor-agent":
         return _call_cursor(prompt, project_root)
+    elif provider == "opencode":
+        return _call_opencode(prompt, project_root)
     else:
         return _call_custom(prompt, provider, project_root)
 
@@ -252,6 +254,26 @@ def _call_custom(prompt: str, cmd: str, project_root: Path) -> tuple[bool, str, 
         return False, "", "Timeout (600s)"
 
 
+def _call_opencode(prompt: str, project_root: Path) -> tuple[bool, str, str]:
+    """调用 opencode CLI（跨平台通用）—— 自动读取 AGENTS.md 与 framework skills"""
+    try:
+        result = subprocess.run(
+            ["opencode", "run", "--auto", prompt],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+            timeout=600,
+        )
+        output = result.stdout + result.stderr
+        if result.returncode == 0 or "DONE" in output:
+            return True, output, ""
+        return False, output, f"Exit code {result.returncode}"
+    except FileNotFoundError:
+        return False, "", "opencode CLI not found. Install: npm i -g opencode-ai"
+    except subprocess.TimeoutExpired:
+        return False, "", "Timeout (600s)"
+
+
 # ── Git ──────────────────────────────────────────────────────────────
 
 def git_commit_step(project_root: Path, msg: str) -> bool:
@@ -271,6 +293,33 @@ def git_commit_step(project_root: Path, msg: str) -> bool:
         return True
     except Exception:
         return False
+
+
+def step_outputs_gate(outputs: list, project_root: Path) -> list[str]:
+    """逐步强制：校验本步产出物文件存在 + contains 关键词。返回缺失/不满足清单。"""
+    problems: list[str] = []
+    for out in outputs:
+        if isinstance(out, str):
+            p = project_root / out
+            if not p.exists():
+                problems.append(f"missing: {out}")
+        elif isinstance(out, dict):
+            for path, criteria in out.items():
+                p = project_root / path
+                if not p.exists():
+                    problems.append(f"missing: {path}")
+                    continue
+                if isinstance(criteria, dict):
+                    contains = criteria.get("contains", [])
+                    if contains:
+                        try:
+                            text = p.read_text(encoding="utf-8", errors="ignore")
+                        except Exception:  # noqa: BLE001
+                            text = ""
+                        for kw in contains:
+                            if kw not in text:
+                                problems.append(f"{path} 缺含: {kw}")
+    return problems
 
 
 # ── Step 分组: 扁平列表 → 串行/并行分组 ──────────────────────────────
@@ -336,8 +385,10 @@ def run_scaffold(scaffold_path: str, provider: str, dry_run: bool,
         icon = "✓" if p.exists() else "⚠"
         print(f"  {icon} Memory: {mf}")
 
-    # Skills dir
-    skills_dir = project_root / "scenarios" / "programming" / "fullstack" / "skills"
+    # Skills dir（通用层优先）
+    skills_dir = project_root / "framework" / "skills"
+    if not skills_dir.exists():
+        skills_dir = project_root / "scenarios" / "programming" / "fullstack" / "skills"
     if not skills_dir.exists():
         skills_dir = project_root / "skills"
 
@@ -390,7 +441,7 @@ def run_scaffold(scaffold_path: str, provider: str, dry_run: bool,
                     all_results.append(result)
                     continue
 
-                # 真实执行
+                # 真实执行（含逐步强制产物门禁）
                 for attempt in range(1, 4):
                     result.attempts = attempt
                     prompt = build_step_prompt(step, task, str(project_root), skills_dir,
@@ -399,12 +450,19 @@ def run_scaffold(scaffold_path: str, provider: str, dry_run: bool,
                     ok, output, err = call_agent(prompt, provider, project_root)
                     result.agent_output = output
                     if ok:
-                        result.success = True
-                        errors_history.clear()
-                        print(f"  ✓ Done")
-                        if auto_commit and git_commit_step(project_root, goal):
-                            print(f"  ✓ Committed")
-                        break
+                        # 逐步强制：校验本 step 的产出物（文件存在 + contains）
+                        gate_errors = step_outputs_gate(step.get("outputs", []), project_root)
+                        if gate_errors:
+                            result.error_output = "\n".join(gate_errors)
+                            errors_history.append(f"[{goal}] outputs 未满足: {'; '.join(gate_errors[:3])}")
+                            print(f"  ✗ outputs 未满足: {'; '.join(gate_errors[:3])}")
+                        else:
+                            result.success = True
+                            errors_history.clear()
+                            print(f"  ✓ Done (outputs 已校验)")
+                            if auto_commit and git_commit_step(project_root, goal):
+                                print(f"  ✓ Committed")
+                            break
                     else:
                         result.error_output = err + output
                         errors_history.append(f"[{goal}] {err}")
@@ -423,6 +481,19 @@ def run_scaffold(scaffold_path: str, provider: str, dry_run: bool,
         for g in post_gates:
             print(f"  □ {g}")
         print()
+
+    # 强制完工门禁（机制层，跨平台）—— 不通过即失败，不依赖 AI 自觉
+    enforce_script = project_root / "hooks" / "scripts" / "enforce_active.py"
+    if enforce_script.exists():
+        print(f"\n── 强制完工门禁 (enforce_active) ──")
+        rc = subprocess.run([sys.executable, str(enforce_script)],
+                            cwd=str(project_root)).returncode
+        if rc != 0:
+            print(f"[ABORT] 强制完工门禁未通过（enforce_active 退出码 {rc}）")
+            session.success = False
+            session.save_report(all_results)
+            return 1
+        print(f"  ✓ 强制完工门禁通过")
 
     session.success = True
     session.save_report(all_results)
