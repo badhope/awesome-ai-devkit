@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] — 2026-10-06
+## [2.0.0] — 2026-10-09
 
 ### Added
 - devkit-doctor.py — CLI health check tool covering skills/scaffolds/mcp/hooks/env
@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - framework/skills 新增 10 个通用技能：code-review、debugging、test-strategy、api-design、secret-scanner、performance-optimization、documentation-writing、architecture-design、requirements-analysis、commit-conventions
 
 ### Changed
+- 版本统一为 2.0.0（README/plugin/expert/docs/CHANGELOG 一致）
+- devkit-doctor 技能检查增强：扫描所有场景 skills 并集 + 校验「技能名 == 目录名」
+- AGENTS.md 增加「强制主动使用能力」机制（Skills/Agents/MCP 必须主动调用，禁止闲置）
 - 通用技能从 scenarios/programming/fullstack/skills 提升至 framework/skills（去重、解耦场景）
 - fullstack/lib 提升为 framework/lib（通用脚本库）
 - devkit-doctor.py 支持检查 framework/skills 通用技能层

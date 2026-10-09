@@ -35,6 +35,7 @@ Awesome AI DevKit 是一个**跨平台的场景化 AI 编程配置生态**。它
 3. **质量门禁**：提交前通过 `python devkit-doctor.py` 与 `python -m pytest -q`。
 4. **配置即代码**：角色、技能、工作流、钩子、MCP 都是 YAML/Markdown 配置，遵循 schema 与既有范例。
 5. **安全底线**：禁止硬编码密钥；使用 `${VAR}` 占位；禁止提交个人绝对路径（`/Users/...`、`C:\Users\...`、`/mnt/...`）。
+6. **主动使用能力（强制）**：本框架已用开放标准提供了 Skills / Agents / Subagents / MCP / Hooks 等能力，**必须主动加载与调用，禁止因"用户没点名"而闲置**。每次任务启动先调用 `instruction-grooming`；凡适用场景/技能/工具的，一律调用；完工按 `quality_gate` 校验（详见 §4）。
 
 ---
 
@@ -57,12 +58,20 @@ Awesome AI DevKit 是一个**跨平台的场景化 AI 编程配置生态**。它
 
 ## 4. 工作方式（框架能力）
 
-- **角色（Agents）**：`scenarios/<场景>/agents/*.md` 定义角色（frontmatter：`name`/`description`/`tools`）。按需调用对应角色。
-- **技能（Skills）**：`scenarios/<场景>/skills/<name>/SKILL.md` 定义可复用技能模块（frontmatter 含 `name`/`description`）。通过 `skills:` 在 scaffold 中引用。
+> **强制主动使用流程**（凡任务必执行，不得跳过，见原则 6）：
+> 1. **启动** → 调用 `instruction-grooming` 明确意图；
+> 2. **匹配技能** → 加载并调用对应 `framework/skills` 或场景技能的 `SKILL.md`；
+> 3. **协作** → 需要分工时调度对应角色/Subagent（`framework/agents`）；
+> 4. **工具** → 需要外部能力时启用对应 MCP server；
+> 5. **多步任务** → 按 scaffold 工作流执行，逐步满足 `quality_gate`。
+> 铁律：**凡是能用上的能力，就用；不能闲置。** 若"有 skill/agent 但没用"，视为执行缺陷。
+
+- **角色（Agents）**：`framework/agents/*.md` 定义通用开发团队角色（frontmatter：`name`/`description`/`tools`）。任务匹配时主动调度对应角色/Subagent。
+- **技能（Skills）**：`framework/skills/<name>/SKILL.md` 定义可复用技能（frontmatter 含 `name`/`description`）。任务匹配时主动加载并调用；亦通过 `skills:` 在 scaffold 中引用。
 - **工作流（Scaffolds）**：`scaffolds/*.yaml` 定义多步骤开发协议（`version: "2.0"`），含 `steps`、`parallel`、`outputs`、`quality_gate`。复制一个既有 scaffold 改造成新流程。
 - **钩子（Hooks）**：`hooks/config.yaml` 绑定生命周期脚本（`pre-task` / `post-task` / `middleware`）。
 - **上下文（Context）**：`context/project.yaml` 记录项目元数据；`context/architecture.md` 记录 ADR。
-- **MCP**：`scenarios/<场景>/mcp/mcp-config.yaml` 声明 MCP server；启用 `enabled: true` 的服务。连接统一走官方 **MCP**（Model Context Protocol，Linux Foundation 托管开放标准）。
+- **MCP**：`mcp/mcp-config.yaml` 声明 MCP server；启用 `enabled: true` 的服务。连接统一走官方 **MCP**（Model Context Protocol，Linux Foundation 托管开放标准）。
 
 ---
 

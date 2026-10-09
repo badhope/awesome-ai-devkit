@@ -229,22 +229,29 @@ class SkillIntegrityCheck(BaseCheck):
 
     def run(self) -> CheckReport:
         report = CheckReport(self.name, self.description)
-        # 通用技能优先：框架层 framework/skills，其次场景 skills，再根 skills
-        skills_dir = self.root / "framework" / "skills"
-        if not skills_dir.exists():
-            skills_dir = self.root / "scenarios" / "programming" / "fullstack" / "skills"
-        if not skills_dir.exists():
-            skills_dir = self.root / "skills"
-        if not skills_dir.exists():
+        # 收集所有技能目录：framework 通用层 + 各场景 skills + 根 skills（同名去重，framework 优先）
+        collected: dict = {}
+        def _add_skills_dir(base: Path) -> None:
+            if base.exists():
+                for d in base.iterdir():
+                    if d.is_dir() and d.name not in collected:
+                        collected[d.name] = d
+        _add_skills_dir(self.root / "framework" / "skills")
+        for sf in (self.root / "scenarios").rglob("skills"):
+            if sf.is_dir():
+                _add_skills_dir(sf)
+        _add_skills_dir(self.root / "skills")
+        if not collected:
             report.findings.append(Finding(CheckResult.FAIL, "skills/ 目录不存在",
-                                           "请确认项目根目录正确或创建 framework/skills"))
+                                          "请确认项目根目录正确或创建 framework/skills"))
             return report
 
-        skill_dirs = sorted([d for d in skills_dir.iterdir() if d.is_dir()])
+        skill_dirs = sorted(collected.values(), key=lambda p: p.name)
         missing = []
         bad_frontmatter = []
         no_description = []
         frontmatter_issues = []
+        name_mismatch = []
         for d in skill_dirs:
             skill_md = d / "SKILL.md"
             if not skill_md.exists():
@@ -254,7 +261,6 @@ class SkillIntegrityCheck(BaseCheck):
             if not content.strip().startswith("---"):
                 bad_frontmatter.append(d.name)
                 continue
-            # parse frontmatter for name and description
             fm_match = re.match(r"^---\n(.*?)\n---", content, re.DOTALL)
             if fm_match:
                 try:
@@ -262,6 +268,8 @@ class SkillIntegrityCheck(BaseCheck):
                     if isinstance(fm, dict):
                         if not fm.get("name"):
                             frontmatter_issues.append((d.name, "缺少 name 字段"))
+                        elif str(fm.get("name")).strip() != d.name:
+                            name_mismatch.append((d.name, fm.get("name")))
                         if not fm.get("description"):
                             no_description.append(d.name)
                             frontmatter_issues.append((d.name, "缺少 description 字段"))
@@ -275,7 +283,7 @@ class SkillIntegrityCheck(BaseCheck):
             report.findings.append(Finding(
                 CheckResult.FAIL,
                 f"缺失 SKILL.md: {', '.join(missing)}",
-                f"在 {skills_dir}/<name>/ 下创建 SKILL.md"))
+                f"在 framework/skills/<name>/ 下创建 SKILL.md"))
         if bad_frontmatter:
             report.findings.append(Finding(
                 CheckResult.WARN,
@@ -291,11 +299,16 @@ class SkillIntegrityCheck(BaseCheck):
         if no_description:
             report.findings.append(Finding(
                 CheckResult.WARN,
-                f"缺少 description 字段: {', '.join(n_description[:5])}" if (
-                    n_description := no_description) else "",
+                f"缺少 description 字段: {', '.join(no_description[:5])}",
                 "添加 description: 字段提高 skill 可发现性"))
 
-        if not missing and not bad_frontmatter and not frontmatter_issues:
+        if name_mismatch:
+            report.findings.append(Finding(
+                CheckResult.FAIL,
+                f"技能名与目录不一致: {', '.join(f'{n}->{m}' for n, m in name_mismatch[:5])}",
+                "SKILL.md frontmatter 的 name 必须等于目录名"))
+
+        if not missing and not bad_frontmatter and not frontmatter_issues and not name_mismatch:
             report.findings.append(Finding(
                 CheckResult.PASS, f"{total}/{total} SKILL.md 存在且结构正常"))
 
@@ -327,10 +340,15 @@ class ScaffoldValidityCheck(BaseCheck):
             report.findings.append(Finding(CheckResult.WARN, "未找到 scaffold yaml 文件"))
             return report
 
-        skills_dir = self.root / "framework" / "skills"
-        if not skills_dir.exists():
-            skills_dir = self.root / "scenarios" / "programming" / "fullstack" / "skills"
-        valid_skills = {d.name for d in skills_dir.iterdir() if d.is_dir()} if skills_dir.exists() else set()
+        valid_skills: set = set()
+        def _collect_valid(base: Path) -> None:
+            if base.exists():
+                valid_skills.update(d.name for d in base.iterdir() if d.is_dir())
+        _collect_valid(self.root / "framework" / "skills")
+        for sf in (self.root / "scenarios").rglob("skills"):
+            if sf.is_dir():
+                _collect_valid(sf)
+        _collect_valid(self.root / "skills")
 
         errors = []
         total_steps = 0

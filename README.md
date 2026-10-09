@@ -1,7 +1,7 @@
 # Awesome AI DevKit
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.4.4-green.svg)](https://github.com/x33834/awesome-ai-devkit/releases/tag/v1.4.4)
+[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://github.com/x33834/awesome-ai-devkit/releases/tag/v2.0.0)
 [![Scenarios](https://img.shields.io/badge/scenarios-1-blue.svg)](scenarios/)
 [![Source](https://img.shields.io/badge/source%20platforms-4-lightgrey.svg)](#source-code--4-platforms)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/x33834/awesome-ai-devkit/pulls)
