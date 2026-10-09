@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - framework/skills 新增 4 个通用技能：planning、refactoring、observability、session-continuation（通用技能库达 37）
 - 同步 README/README_zh/docs/experts 技能计数至 37，并将 coding 场景登记进场景索引
 
+### Added — 自适应编排层（coding 场景升级为"全能自适应底座"）
+- skills/auto-detect — 自动识别技术栈/项目类型/测试框架/工具链（扫描项目配置）
+- skills/team-composer — 按项目类型自动组建团队（复用 framework 11 角色）
+- skills/scaffold-generator — 动态生成适配技术栈的 scaffold
+- lib/stack-detector.py — 可执行识别器（输出 tech_stack/project_type/test_framework/role_set）
+- scaffolds/adaptive-feature.yaml — 自适应功能开发脚手架
+- coding-agent 增强为自动编排者：识别 → 组队 → 生成 → 执行
+- scaffold-runner：新增 --stack 技术栈驱动变量映射（ext/module/test_framework 随栈自适应），并支持自动推断技术栈
+
 ### Fixed
 - scaffold-runner：修复 scaffold 模板路径占位符（`<feature>`/`<module>`/`<ext>`）未替换导致的产物门禁误判缺失（影响 coding/fullstack 场景）；支持 `--feature` 覆盖与 glob 模糊匹配，并新增回归测试
 

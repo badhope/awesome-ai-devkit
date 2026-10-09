@@ -395,7 +395,8 @@ def group_steps(steps: list[dict]) -> list[tuple[str, list[int]]]:
 # ── 主流程 ───────────────────────────────────────────────────────────
 
 def run_scaffold(scaffold_path: str, provider: str, dry_run: bool,
-                 auto_commit: bool, project_root: Path, feature: str = "") -> int:
+                 auto_commit: bool, project_root: Path, feature: str = "",
+                 stack: str = "") -> int:
 
     scaffold_file = Path(scaffold_path)
     if not scaffold_file.exists():
@@ -410,6 +411,26 @@ def run_scaffold(scaffold_path: str, provider: str, dry_run: bool,
 
     # 占位符变量：<feature> 等模板路径替换为真实值（取自 task 或 CLI）
     vars: dict = {"feature": feature, "module": feature, "ext": "py"}
+    # 技术栈 → 占位符默认值映射（让 <ext>/<module>/<test_framework> 随技术栈自适应）
+    _stack_vars = {
+        "react":   {"ext": "tsx", "module": "components", "test_framework": "vitest"},
+        "vue":     {"ext": "vue", "module": "components", "test_framework": "vitest"},
+        "svelte":  {"ext": "svelte", "module": "components", "test_framework": "vitest"},
+        "next":    {"ext": "tsx", "module": "components", "test_framework": "jest"},
+        "angular": {"ext": "ts", "module": "app", "test_framework": "jest"},
+        "express": {"ext": "js", "module": "routes", "test_framework": "jest"},
+        "fastify": {"ext": "ts", "module": "routes", "test_framework": "vitest"},
+        "python":  {"ext": "py", "module": "services", "test_framework": "pytest"},
+        "django":  {"ext": "py", "module": "apps", "test_framework": "pytest"},
+        "fastapi": {"ext": "py", "module": "routers", "test_framework": "pytest"},
+        "flask":   {"ext": "py", "module": "routes", "test_framework": "pytest"},
+        "go":      {"ext": "go", "module": "internal", "test_framework": "go test"},
+        "rust":    {"ext": "rs", "module": "src", "test_framework": "cargo test"},
+        "java":    {"ext": "java", "module": "src", "test_framework": "junit"},
+    }
+    if stack and stack.lower() in _stack_vars:
+        vars.update(_stack_vars[stack.lower()])
+    vars.setdefault("test_framework", "pytest")
 
     if not raw_steps:
         print("[ERROR] no steps defined in scaffold")
@@ -571,6 +592,9 @@ def main():
     parser.add_argument("--root", default=".", help="Project root directory")
     parser.add_argument("--feature", default="",
                         help="Feature/module name used to substitute <feature> in scaffold outputs")
+    parser.add_argument("--stack", default="",
+                        help="Tech stack used to auto-set <ext>/<module>/<test_framework> "
+                             "(e.g. react, go, python, rust). Auto-detected if omitted.")
 
     args = parser.parse_args()
 
@@ -588,6 +612,31 @@ def main():
     if not feature:
         feature = Path(scaffold_path).stem
 
+    # 技术栈推断：--stack 优先；否则扫描项目根常见清单文件自动判断
+    stack = args.stack
+    if not stack:
+        import re as _re
+        root_p = Path(args.root).resolve()
+        try:
+            pkg = root_p / "package.json"
+            if pkg.exists():
+                pj = json.loads(pkg.read_text(encoding="utf-8"))
+                deps = {**pj.get("dependencies", {}), **pj.get("devDependencies", {})}
+                for name in ("react", "next", "vue", "svelte", "angular", "express", "fastify"):
+                    if name in deps:
+                        stack = name
+                        break
+                if not stack:
+                    stack = "typescript" if ("typescript" in deps or (root_p / "tsconfig.json").exists()) else "javascript"
+            elif (root_p / "go.mod").exists():
+                stack = "go"
+            elif (root_p / "Cargo.toml").exists():
+                stack = "rust"
+            elif (root_p / "pyproject.toml").exists() or (root_p / "requirements.txt").exists():
+                stack = "python"
+        except Exception:
+            stack = ""
+
     sys.exit(run_scaffold(
         scaffold_path=scaffold_path,
         provider=args.provider,
@@ -595,6 +644,7 @@ def main():
         auto_commit=args.auto_commit,
         project_root=Path(args.root).resolve(),
         feature=feature,
+        stack=stack,
     ))
 
 

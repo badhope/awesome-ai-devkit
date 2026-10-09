@@ -1,0 +1,77 @@
+# ──────────────────────────────────────────────────────────────────
+# 通用编程 — 自适应功能开发 Scaffold v2.0
+#
+# 用途：跨语言/跨技术栈的自适应功能开发。核心步骤固定，但产物路径
+# 用 <module>/<feature>/<ext> 占位符，scaffold-runner 会根据识别到的
+# 技术栈自动替换（如 TS→.tsx、Python→.py、Go→.go）。
+# 使用前先用 stack-detector 识别技术栈，再把识别结果注入 prompt。
+# ──────────────────────────────────────────────────────────────────
+
+version: "2.0"
+
+task:
+  name: "adaptive-feature"
+  description: "自适应功能开发：识别技术栈 → 按栈实现 → 测试 → 提交"
+  type: feature
+  feature: "todo-list"
+
+memory:
+  - context/project.yaml
+  - context/architecture.md
+  - CHANGELOG.md
+
+steps:
+
+  - goal: "需求澄清与验收标准"
+    description: "将任务转化为可执行验收标准，明确技术栈（来自 auto-detect 识别）"
+    skills: [instruction-grooming, auto-detect]
+    outputs:
+      - docs/requirements/<feature>.md:
+          contains: [验收标准, 完成定义]
+
+  - goal: "方案设计与 ADR"
+    description: "确定实现方案与数据结构，必要时记录 ADR"
+    skills: [architecture-design, project-health]
+    outputs:
+      - docs/design/feat-<feature>.md:
+          contains: [方案, 数据结构]
+
+  - goal: "编码实现 + 单元测试（按技术栈）"
+    description: "按识别到的技术栈实现。React→src/、Go→internal/、Python→src/，均同步写单元测试"
+    skills: [debugging, linter-formatter]
+    outputs:
+      - src/<module>/<feature>.<ext>:
+          contains: [export, def, func, function]
+      - tests/test_<feature>.<ext>:
+          contains: [test_]
+    quality_gate: "单元测试全部通过（按栈：pytest / vitest / go test / cargo test）"
+
+  - goal: "全量测试与边界验证"
+    description: "运行技术栈对应的测试框架，补充边界用例"
+    skills: [test-strategy, loop-verification]
+    quality_gate: "全量测试通过，边界用例覆盖"
+
+  - goal: "代码审查 + 安全检查"
+    description: "自审：硬编码密钥、注入、越权、资源泄漏"
+    skills: [code-review, security-governance]
+    quality_gate: "无安全高危漏洞；无硬编码密钥；无资源泄漏"
+
+  - goal: "提交与文档交付"
+    description: "按提交规范提交，更新 CHANGELOG"
+    skills: [git-workflow, commit-conventions, memory-persistent]
+    outputs:
+      - CHANGELOG.md:
+          append: true
+          contains: [feature]
+
+post_task:
+  quality_gates:
+    - "全量测试通过（按技术栈测试框架）"
+    - "无硬编码密钥/凭证"
+    - "lint 无 error"
+    - "CHANGELOG 已更新"
+    - "loop-verification: 自动循环验证所有质量门禁，最多 3 轮"
+  loop_config:
+    max_loops: 3
+    fail_threshold: 0
+    auto_fix: true
