@@ -36,7 +36,7 @@ Works on **any tool that supports the Expert plugin standard**.
 
 ### Fullstack Dev Team *(included)*
 
-A complete product-to-operations pipeline: 11 universal roles (PM, Architect, Backend, Frontend, Design System, QA, Code Review, Security, DevOps, SRE, Database Engineer) and 33 reusable skills (code quality, security, context, automation, review, debugging, test strategy, and more) in the `framework/` layer.
+A complete product-to-operations pipeline: 11 universal roles (PM, Architect, Backend, Frontend, Design System, QA, Code Review, Security, DevOps, SRE, Database Engineer) and 37 reusable skills (code quality, security, context, automation, review, debugging, test strategy, planning, and more) in the `framework/` layer.
 
 | What | Path |
 |------|------|
@@ -108,7 +108,7 @@ Registers the Fullstack scenario and other included content as an Expert in your
 ```
 awesome-ai-devkit/
 ├── framework/                   # Universal capability layer (cross-platform)
-│   ├── skills/                  # 33+ universal skill library (agentskills.io)
+│   ├── skills/                  # 37+ universal skill library (agentskills.io)
 │   ├── agents/                  # Universal dev-team roles (11)
 │   ├── mcp/                     # Universal MCP collection
 │   ├── lib/                     # Universal scripts

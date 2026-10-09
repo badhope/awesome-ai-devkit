@@ -57,14 +57,14 @@
     },
     "skills": {
       "path": "../../framework/skills/",
-      "count": 33,
+      "count": 37,
       "categories": {
-        "workflow": ["scaffold-workflow", "instruction-grooming", "task-tracker", "integration-patterns", "commit-conventions"],
-        "quality": ["code-duplication", "mutation-testing", "linter-formatter", "loop-verification", "project-health", "code-review", "debugging", "test-strategy", "performance-optimization", "documentation-writing"],
+        "workflow": ["scaffold-workflow", "instruction-grooming", "task-tracker", "integration-patterns", "commit-conventions", "planning"],
+        "quality": ["code-duplication", "mutation-testing", "linter-formatter", "loop-verification", "project-health", "code-review", "debugging", "test-strategy", "performance-optimization", "documentation-writing", "refactoring", "session-continuation"],
         "security": ["security-governance", "sub-agent-guard", "dependency-audit", "secret-scanner"],
         "architecture": ["architecture-design", "api-design", "requirements-analysis"],
         "context": ["context-compression", "memory-management", "memory-persistent", "model-routing"],
-        "infra": ["devkit-infra", "devkit-utilities", "calculator-math", "auto-heal"],
+        "infra": ["devkit-infra", "devkit-utilities", "calculator-math", "auto-heal", "observability"],
         "release": ["semantic-release", "git-workflow"],
         "frontend": ["web-browser-vision"]
       }

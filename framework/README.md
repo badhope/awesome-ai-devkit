@@ -20,17 +20,17 @@ framework/
 └── rules/       # 通用规则（根 rules/ 为权威，此处说明）
 ```
 
-## 通用技能库（framework/skills/，33+ 个）
+## 通用技能库（framework/skills/，37+ 个）
 
 | 类别 | 技能 |
 |------|------|
-| 编排 | instruction-grooming、scaffold-workflow、task-tracker、loop-verification、sub-agent-guard |
-| 上下文/记忆 | memory-management、memory-persistent、context-compression、model-routing |
-| 质量 | code-review、debugging、test-strategy、mutation-testing、linter-formatter、project-health |
+| 编排 | instruction-grooming、scaffold-workflow、task-tracker、loop-verification、sub-agent-guard、planning |
+| 上下文/记忆 | memory-management、memory-persistent、context-compression、model-routing、session-continuation |
+| 质量 | code-review、debugging、test-strategy、mutation-testing、linter-formatter、project-health、refactoring |
 | 安全 | security-governance、secret-scanner、dependency-audit、sub-agent-guard |
 | 工程 | git-workflow、commit-conventions、semantic-release、api-design、integration-patterns |
 | 文档 | documentation-writing、requirements-analysis、architecture-design |
-| 基础设施 | devkit-infra、devkit-utilities、auto-heal、code-duplication、calculator-math、web-browser-vision |
+| 基础设施 | devkit-infra、devkit-utilities、auto-heal、code-duplication、calculator-math、web-browser-vision、observability |
 
 > 技能格式：`framework/skills/<name>/SKILL.md`（frontmatter: `name`/`description`/`layer`/`tags` + 正文）。
 

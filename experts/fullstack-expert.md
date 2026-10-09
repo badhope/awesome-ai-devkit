@@ -4,7 +4,7 @@ description: 全栈开发终极专家——整合框架全部 11 层能力，跨
 layer: 7-Expert
 version: 2.0.0
 roles_covered: 11
-skills_covered: 33
+skills_covered: 37
 tools_covered: 25
 mcp_servers: 16
 ---
