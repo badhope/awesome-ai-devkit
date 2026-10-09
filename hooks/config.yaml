@@ -12,11 +12,19 @@ hooks:
         description: "开工：检查 scaffold.yaml 合法性 + skill 存在性"
         timeout: 30
         required: true
+      - script: "hooks/scripts/enforce_active.py --pre"
+        description: "强制开工：确认项目上下文与通用技能库已就绪"
+        timeout: 30
+        required: true
     post_task:
       - script: "hooks/scripts/post-task.sh"
         description: "完工：运行 post_task validations"
         timeout: 60
         required: false
+      - script: "hooks/scripts/enforce_active.py"
+        description: "强制完工门禁：上下文/doctor/测试/密钥/文档"
+        timeout: 120
+        required: true
 
   # ── Agent 启动/结束 ──
   agent_lifecycle:

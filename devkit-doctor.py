@@ -598,7 +598,8 @@ class HooksCheck(BaseCheck):
                             if isinstance(hook_list, list):
                                 for h in hook_list:
                                     if isinstance(h, dict) and "script" in h:
-                                        refs.add(h["script"])
+                                        # 支持带参数（如 "path/to/script.py --pre"）→ 取脚本路径
+                                        refs.add(h["script"].split()[0])
                 missing_refs = [r for r in refs if not (self.root / r).exists()]
                 if missing_refs:
                     report.findings.append(Finding(

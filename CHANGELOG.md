@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - framework/skills 新增 10 个通用技能：code-review、debugging、test-strategy、api-design、secret-scanner、performance-optimization、documentation-writing、architecture-design、requirements-analysis、commit-conventions
 
 ### Changed
+- 新增 hooks/scripts/enforce_active.py 强制门禁（机制层，跨平台）：上下文/doctor/测试/密钥/CHANGELOG 校验
+- hooks/config.yaml 挂载开工（--pre）与完工强制门禁
+- AGENTS.md / platforms/README 增加「提示层 vs 机制层」分层说明与按平台强制接入
+- devkit-doctor 支持带参数的脚本引用（如 script.py --pre）
 - 版本统一为 2.0.0（README/plugin/expert/docs/CHANGELOG 一致）
 - devkit-doctor 技能检查增强：扫描所有场景 skills 并集 + 校验「技能名 == 目录名」
 - AGENTS.md 增加「强制主动使用能力」机制（Skills/Agents/MCP 必须主动调用，禁止闲置）

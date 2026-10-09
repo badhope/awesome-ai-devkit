@@ -60,8 +60,33 @@ platforms/
 └── cursor/examples/*.mdc           # Cursor Rules 官方格式示例
 ```
 
+## 强制机制（按平台接入）
+
+**核心问题**：提示词只靠模型"自觉"，会不主动/不听话。因此把关键动作下沉为**机器可校验的门禁**（`hooks/scripts/enforce_active.py`，跨平台，不依赖任何特定工具）：
+
+```
+分层控制（低→高）：
+L0 提示层   AGENTS.md + platform 入口        → 所有平台（兜底）
+L1 机制层   hooks/scripts/enforce_active.py  → 跨平台，任何地方可跑
+L2 原生钩子 各平台官方 hooks 挂载 enforce    → 能力平台（推荐）
+L3 门禁     CI / quality_gate / doctor       → 最终校验，不通过即失败
+```
+
+按平台接入差异：
+
+| 平台 | 原生 hook 能力 | 强制接入方式 |
+|------|------|------|
+| **Claude Code** | ✅ 原生 hooks（Stop/PreToolUse/SubagentStop 等） | 把 `enforce_active.py` 挂到 `Stop`/`PostToolUse` hook |
+| **Cursor** | ✅ 支持 hooks / rules | rules 强制调用；或挂到 hooks |
+| **OpenAI Codex** | ⚠️ 有限 | AGENTS.md 强制 + 手动/脚本调用 |
+| **Gemini CLI** | ⚠️ 有限 | AGENTS.md 强制 + 手动 |
+| **Copilot / Cline / 国产工具** | ⚠️ 差异较大 | AGENTS.md 强制 + 脚本/CI |
+| **CI（GitHub Actions）** | ✅ 通用 | 把 `enforce_active.py` 作为 job 步骤（平台无关最强门禁） |
+
+> 结论：**`enforce_active.py` 是平台无关的"最底层强制"**；平台若有原生 hooks，就把它挂上去增强；没有，就靠 AGENTS.md 强制调用 + CI 兜底。**尽量用，不强求**。
+
 ## 参考
-- `AGENTS.md`（根）— 统一指令权威（含平台自省声明）
+- `AGENTS.md`（根）— 统一指令权威（含平台自省声明 + 强制主动使用机制）
 - `mcp/config/` — 各平台 MCP 配置（官方格式）
 - `scenarios/<场景>/` — 领域专用内容（按需加载）
 

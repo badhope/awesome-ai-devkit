@@ -77,7 +77,16 @@ Awesome AI DevKit 是一个**跨平台的场景化 AI 编程配置生态**。它
 
 ## 5. 质量与安全门禁
 
+**分层强制（不只靠提示，靠机制）**：提示词只约束"自觉"，以下机制把关键动作变成"**不通过就失败**"，平台无关：
+
+- **L1 机制层**：`hooks/scripts/enforce_active.py`（跨平台门禁：项目上下文 / doctor / 测试 / 密钥 / CHANGELOG）。完工与开工均挂载在 `hooks/config.yaml`。
+- **L2 平台原生钩子**：有 hooks 的平台（Claude Code / Cursor 等）把 `enforce_active.py` 挂到原生事件，见 `platforms/README.md`。
+- **L3 结果门禁**：`quality_gate` / CI / `devkit-doctor` —— 不满足即判定失败。
+
+在任务中执行：
+
 - 提交前运行 `python devkit-doctor.py`（检查 skills/scaffolds/mcp/hooks/agents/json/docs/git/env）。
+- 完工运行 `python hooks/scripts/enforce_active.py`（强制门禁）。
 - 运行 `python -m pytest -q` 保证测试通过。
 - 变更遵循 Conventional Commits：`feat:` `fix:` `docs:` `chore:` `ci:`。
 - CHANGELOG 遵循 Keep a Changelog；版本遵循 Semantic Versioning。
