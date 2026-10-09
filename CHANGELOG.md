@@ -47,6 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AGENTS.md §5 质量与安全门禁：补充 pragmatic-guard 为 L1 机制门禁，列出 5 类坏毛病检测规则与用法
 - scenarios/programming/coding/examples/pragmatic-remediation — 「AI 坏毛病整改」完整案例（5 类坏代码 → 门禁报错 → 整改对照），并登记进 examples 索引
 
+### Added — 官网沉淀 + enforce_active 整改引导
+- docs/pragmatic-guard.html — 独立官网页面（深色风格，与 index.html 一致），沉淀机制说明 + 5 类整改对照 + 强制落地位置；index.html 导航新增入口
+- enforce_active.py：pragmatic-guard FAIL 时自动解析问题类别并输出「整改引导」（按 fake/redundant/overengine/business 给出修复建议）
+
 ## [2.0.0] — 2026-10-09
 
 ### Added

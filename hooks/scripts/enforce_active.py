@@ -121,12 +121,18 @@ def main():
         if pg.exists():
             pg_rc, pg_out = run_cmd([sys.executable, str(pg), "--project", str(root), "--json"], root)
             if pg_rc != 0:
-                n_issues = "?"
+                pg_data = None
                 try:
-                    n_issues = len(json.loads(pg_out).get("issues", []))
+                    pg_data = json.loads(pg_out)
                 except Exception:  # noqa: BLE001
                     pass
+                n_issues = len(pg_data.get("issues", [])) if pg_data else "?"
                 fails.append(f"pragmatic-guard FAIL（{n_issues} 个问题：重复造轮/冗余/虚假/过度设计/不合业务）")
+                # 整改引导：按问题类别给出修复建议
+                if pg_data and pg_data.get("issues"):
+                    advice = _guard_advice(pg_data["issues"])
+                    for line in advice:
+                        fails.append(line)
         else:
             warns.append("pragmatic-guard.py 缺失（framework/lib/scripts/quality/）")
 
@@ -153,6 +159,34 @@ def run_cmd(cmd, cwd):
         return r.returncode, r.stdout
     except Exception as e:  # noqa: BLE001
         return -1, str(e)
+
+
+# 各类别坏毛病的修复建议
+GUARD_FIX_MAP = {
+    "[fake]":        "  修复: 删除占位符(pass/TODO/NotImplementedError)，要么真实现要么明确不做并说明",
+    "[redundant]":   "  修复: 删除空文件/无用命名/未被引用文件，新增文件必须被 import/require 引用",
+    "[overengine]":  "  修复: 去掉过度抽象(工厂/无用配置类/死分支)，YAGNI+KISS，够用就好",
+    "[business]":    "  修复: 魔法数字命名常量，移除演示字符串，异常必须 except/catch 处理",
+}
+
+
+def _guard_advice(issues):
+    """根据 pragmatic-guard 检出的问题，归并同类并给修复建议。"""
+    tips = []
+    seen_cats = set()
+    for issue in issues:
+        cat = None
+        for prefix in GUARD_FIX_MAP:
+            if issue.startswith(prefix):
+                cat = prefix
+                break
+        if cat and cat not in seen_cats:
+            seen_cats.add(cat)
+            tips.append(f"    [pragmatic-guard] {cat.strip('[]')}: {GUARD_FIX_MAP[cat]}")
+    if not tips:
+        tips.append("    [pragmatic-guard] 请运行 python3 framework/lib/scripts/quality/pragmatic-guard.py --project . 查看具体位置")
+    tips.insert(0, "    整改引导（framework/lib/scripts/quality/pragmatic-guard.py --project . --json 可看明细）:")
+    return tips
 
 
 if __name__ == "__main__":

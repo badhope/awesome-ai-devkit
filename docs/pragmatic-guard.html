@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Awesome AI DevKit — Pragmatic Guard 防 AI 坏毛病门禁。机制说明 + 5 类坏毛病整改案例（重复造轮/冗余/虚假实现/过度设计/不合业务）。">
+<meta name="keywords" content="pragmatic-guard,ai-bad-habits,quality-gate,anti-overengineering,code-quality">
+<meta name="author" content="Awesome AI DevKit Team">
+<meta property="og:title" content="Pragmatic Guard — 防 AI 坏毛病门禁">
+<meta property="og:description" content="机制强制拦截 AI 重复造轮/冗余文件/虚假实现/过度设计/业务不合现实，含整改案例课堂。">
+<meta name="theme-color" content="#0a0e1a">
+<title>Pragmatic Guard — 防 AI 坏毛病门禁 | Awesome AI DevKit</title>
+<style>
+:root {
+  --bg: #0a0e1a;
+  --bg-elevated: #0f1629;
+  --card: #111d35;
+  --card-hover: #162442;
+  --border: #1e2d4a;
+  --border-light: #2a3f65;
+  --text: #e2e8f0;
+  --text-muted: #8899b4;
+  --text-dim: #5a6a85;
+  --accent-1: #6366f1;
+  --accent-2: #8b5cf6;
+  --accent-3: #06b6d4;
+  --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  --gradient-text: linear-gradient(135deg, #818cf8 0%, #a78bfa 40%, #22d3ee 100%);
+  --green: #10b981;
+  --green-bg: rgba(16,185,129,.1);
+  --red: #ef4444;
+  --red-bg: rgba(239,68,68,.1);
+  --amber: #f59e0b;
+  --amber-bg: rgba(245,158,11,.1);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,.3);
+  --shadow-lg: 0 8px 48px rgba(0,0,0,.4);
+  --transition: .2s cubic-bezier(.4,0,.2,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.7; font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent-3); text-decoration: none; transition: color var(--transition); }
+a:hover { color: var(--accent-1); }
+
+/* ── Header ── */
+header {
+  padding: 60px 24px 40px; text-align: center;
+  background: radial-gradient(1200px 400px at 50% -20%, rgba(99,102,241,.18), transparent 70%);
+  border-bottom: 1px solid var(--border);
+}
+header .badge { display:inline-block; padding:4px 14px; border-radius:20px; background:var(--green-bg);
+  color:var(--green); font-size:13px; font-weight:600; letter-spacing:.5px; border:1px solid rgba(16,185,129,.3); }
+header h1 { font-size:44px; margin:16px 0 8px; font-weight:800; background:var(--gradient-text);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+header .sub { color:var(--text-muted); font-size:18px; max-width:720px; margin:0 auto; }
+
+/* ── Layout ── */
+.container { max-width:1100px; margin:0 auto; padding:32px 24px 80px; }
+section { margin-top:48px; }
+h2 { font-size:28px; margin-bottom:20px; font-weight:700; display:flex; align-items:center; gap:10px; }
+h2 .num { font-size:15px; background:var(--card); border:1px solid var(--border); color:var(--accent-3);
+  padding:2px 10px; border-radius:8px; font-weight:600; }
+h3 { font-size:20px; margin:24px 0 10px; color:var(--accent-2); }
+
+/* ── Cards ── */
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px; transition:var(--transition); }
+.card:hover { transform:translateY(-3px); border-color:var(--border-light); box-shadow:var(--shadow); }
+.card .icon { font-size:26px; margin-bottom:8px; }
+.card h4 { font-size:17px; margin-bottom:8px; }
+.card p { color:var(--text-muted); font-size:14.5px; }
+.card .tag { display:inline-block; font-size:12px; padding:2px 8px; border-radius:6px; margin-top:8px; }
+.tag.fail { background:var(--red-bg); color:var(--red); }
+.tag.ok { background:var(--green-bg); color:var(--green); }
+
+/* ── 门禁框 ── */
+.gate { background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius); padding:16px 20px; font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace; font-size:13.5px; }
+.gate .fail { color:var(--red); }
+.gate .ok { color:var(--green); }
+.gate .warn { color:var(--amber); }
+
+/* ── 代码对比 ── */
+.cmp { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; }
+@media (max-width:720px){ .cmp{ grid-template-columns:1fr; } }
+.code { border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--border); }
+.code .head { padding:6px 12px; font-size:12px; font-weight:600; letter-spacing:.5px; }
+.code.bad .head { background:var(--red-bg); color:var(--red); }
+.code.good .head { background:var(--green-bg); color:var(--green); }
+.code pre { padding:14px; font-size:13px; font-family:ui-monospace,SFMono-Regular,Consolas,'Courier New',monospace;
+  line-height:1.6; overflow-x:auto; color:var(--text); background:var(--bg-elevated); }
+
+/* ── 整改步骤 ── */
+.steps { display:flex; flex-direction:column; gap:12px; }
+.step { display:flex; gap:14px; align-items:flex-start; padding:16px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); }
+.step .n { flex:none; width:30px; height:30px; border-radius:50%; background:var(--gradient); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; }
+.step .body h4 { font-size:16px; margin-bottom:4px; }
+.step .body p { color:var(--text-muted); font-size:14.5px; }
+
+/* ── 表 ── */
+table { width:100%; border-collapse:collapse; margin-top:12px; font-size:14.5px; }
+th, td { text-align:left; padding:10px 14px; border-bottom:1px solid var(--border); }
+th { color:var(--text-muted); font-weight:600; background:var(--bg-elevated); }
+td { color:var(--text); }
+tr:hover td { background:var(--card-hover); }
+
+/* ── Footer ── */
+footer { text-align:center; padding:32px 24px; color:var(--text-dim); border-top:1px solid var(--border); font-size:14px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">机制层 · 强制门禁</div>
+  <h1>Pragmatic Guard</h1>
+  <p class="sub">拦住 AI 的 5 类坏毛病：重复造轮 · 冗余文件 · 虚假实现 · 过度设计 · 业务不合逻辑</p>
+</header>
+
+<div class="container">
+
+  <section>
+    <h2><span class="num">01</span> 为什么需要它</h2>
+    <p style="color:var(--text-muted);max-width:860px">
+      提示词只能约束 AI 的"自觉"，但 AI 常产出 <b>好看却无用 / 假装完成 / 过度抽象 / 不合真实业务</b> 的代码。
+      <b>Pragmatic Guard</b> 把这件事从"靠提示"下沉为"程序强制校验"——完工时自动扫描，发现问题直接
+      <b style="color:var(--red)">阻断提交</b>，不通过就过不了门禁。
+    </p>
+    <div class="gate" style="margin-top:16px">
+      <span class="ok">$ python3 framework/lib/scripts/quality/pragmatic-guard.py --project .</span><br>
+      <span class="ok">✅ PASS: 0 个问题</span> &nbsp;&nbsp; <span class="warn">exit=0（通过）</span><br>
+      <span class="fail">❌ FAIL: 4 项 · exit=1（必须整改后重跑）</span>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span> 5 类坏毛病一览</h2>
+    <div class="grid">
+      <div class="card"><div class="num">①</div><h4>重复造轮</h4><p>已有库/框架可完成却手写 HTTP、序列化等，复现轮子。</p><span class="tag fail">复用检测</span></div>
+      <div class="card"><div class="num">②</div><h4>冗余文件</h4><p>空文件、占位命名（dummy/stub）、从未被 import 的孤儿文件。</p><span class="tag fail">引用扫描</span></div>
+      <div class="card"><div class="num">③</div><h4>虚假实现</h4><p>pass / TODO / NotImplementedError / 空函数体 / return None 冒充完成。</p><span class="tag fail">占位扫描</span></div>
+      <div class="card"><div class="num">④</div><h4>过度设计</h4><p>为简单需求造工厂、接口、子类、无用配置类。</p><span class="tag fail">复杂度信号</span></div>
+      <div class="card"><div class="num">⑤</div><h4>业务不合逻辑</h4><p>魔法数字、演示字符串、异常被吞、命名不符真实业务。</p><span class="tag fail">业务校验</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span> 整改三步法</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><div class="body"><h4>定位</h4><p>运行 pragmatic-guard 扫描，拿到具体文件/行号/问题类别。</p></div></div>
+      <div class="step"><div class="n">2</div><div class="body"><h4>整改</h4><p>复用已有库 / 删冗余 / 补真实实现 / 去过度抽象 / 命名常量 + 处理异常。</p></div></div>
+      <div class="step"><div class="n">3</div><div class="body"><h4>复验</h4><p>重跑直到 exit 0，再进 enforce_active 完工门禁 → 提交。</p></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span> 5 类整改对照（坏 vs 好）</h2>
+
+    <h3>① 重复造轮</h3>
+    <div class="cmp">
+      <div class="code"><div class="head">✗ BAD — 手写 HTTP 客户端</div>
+        <pre>import socket
+def http_get(url):
+    host, path = url.split("://")[1].split("/",1)
+sock = socket.create_connection((host,80))
+    sock.send(f"GET /{path}...".encode())
+    return sock.recv(1024).decode()</pre></div>
+      <div class="code"><div class="head">✓ GOOD — 复用现有库</div>
+        <pre>import httpx
+def http_get(url):
+    return httpx.get(url, timeout=5).text</pre></div>
+    </div>
+
+    <h3>② 冗余文件</h3>
+    <div class="code"><div class="head">BAD — 一堆没用的文件</div>
+      <pre>src/utils_helper.py        # 空文件
+src/placeholder_api.py     # 只有占位符
+src/dummy_service.py       # 从未被 import</pre></div>
+    <div class="gate" style="margin-top:8px"><span class="fail">✗ [redundant] 空文件 · 疑似无用命名 · 可能未被引用</span><br><span class="ok">✓ 整改：删除无用文件，新增文件必须被 import/require 引用</span></div>
+
+    <h3>③ 虚假实现</h3>
+    <div class="cmp">
+      <div class="code"><div class="head">✗ BAD — 占位冒充完成</div>
+        <pre>def process_payment(card):
+    pass                    # 空函数
+    # TODO: 接支付网关
+
+def refund(id):
+    raise NotImplementedError</pre></div>
+      <div class="code"><div class="head">✓ GOOD — 真实现 / 诚实声明</div>
+        <pre>def process_payment(payload):
+    return gateway.charge(payload)
+
+def upload(id):
+    logger.info("upload 本期不做")
+    return False  # 比 raise 诚实</pre></div>
+    </div>
+
+    <h3>④ 过度设计</h3>
+    <div class="cmp">
+      <div class="code"><div class="head">✗ BAD — 为读配置造工厂</div>
+        <pre>class ConfigAbstractFactory:
+    ...
+class JsonConfigReader(ConfigAbstractFactory): ...
+class YamlConfigReader(ConfigAbstractFactory): ...
+def get_setting(name):
+    return JsonConfigReader().read(name)</pre></div>
+      <div class="code"><div class="head">✓ GOOD — 一个函数搞定（YAGNI）</div>
+        <pre>import json
+def get_setting(name, path="config.json"):
+    with open(path) as f:
+        return json.load(f)[name]</pre></div>
+    </div>
+
+    <h3>⑤ 业务不合逻辑</h3>
+    <div class="cmp">
+      <div class="code"><div class="head">✗ BAD — 魔法数/演示串/吞异常</div>
+        <pre>def checkout(items):
+    tax = total * 0.0925     # 无命名
+    return {"greeting":"hello",...}
+    try:
+        ...
+    except:                # 吞掉异常</pre></div>
+      <div class="code"><div class="head">✓ GOOD — 常量+真实业务+处理异常</div>
+        <pre>TAX_RATE = 0.0925
+def checkout(items):
+    tax = round(sum(i.price for i in items)*TAX_RATE, 2)
+    try:
+        return {"subtotal":..., "tax":tax}
+    except ValueError as e:
+        raise ValueError(f"无效购物车: {e}")</pre></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span> 强制落地位置</h2>
+    <table>
+      <tr><th>层</th><th>位置</th><th>作用</th></tr>
+      <tr><td>机制层</td><td>enforce_active.py（第 7 项门禁）</td><td>完工强制扫描，FAIL 即阻断</td></tr>
+      <tr><td>场景层</td><td>coding / fullstack 脚手架 post_task</td><td>功能/重构/故障响应后强制校验</td></tr>
+      <tr><td>指令层</td><td>AGENTS.md §5</td><td>所有 AI Agent 打开即知 5 类规则</td></tr>
+      <tr><td>脚本</td><td>framework/lib/scripts/quality/pragmatic-guard.py</td><td>可执行扫描，exit 0/1</td></tr>
+      <tr><td>技能</td><td>framework/skills/pragmatic-guard/SKILL.md</td><td>编码阶段的规则清单（38 个通用技能之一）</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">06</span> 可复现</h2>
+    <div class="gate">
+      <span class="ok"># 1. 建坏代码项目 → 运行门禁看报错</span><br>
+      python3 framework/lib/scripts/quality/pragmatic-guard.py --project .<br><br>
+      <span class="ok"># 2. 逐条整改（对照上方）→ 重跑直到 exit 0</span><br><br>
+      <span class="ok"># 3. 完工门禁</span><br>
+      python3 hooks/scripts/enforce_active.py
+    </div>
+    <p style="color:var(--text-muted);margin-top:16px">完整案例见仓库 <code>scenarios/programming/coding/examples/pragmatic-remediation/README.md</code>。</p>
+  </section>
+
+  <footer>
+    Awesome AI DevKit · Pragmatic Guard — 让 AI 产出真实、简洁、贴近业务的代码。<br>
+    校验脚本 · 通用技能 · 场景门禁 · 完工强制链
+  </footer>
+
+</div>
+</body>
+</html>
