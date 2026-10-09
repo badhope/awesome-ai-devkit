@@ -95,7 +95,7 @@ bash hooks/scripts/post-task.sh scaffold.yaml
 | `scaffolds/incident-response.yaml` | 故障响应 | 5 | 10 |
 | `scaffolds/refactoring.yaml` | 代码重构 | 6 | 10 |
 
-> 场景脚手架中的 skill 引用复用通用层 `framework/skills/` 中的 37 个通用技能。
+> 场景脚手架中的 skill 引用复用通用层 `framework/skills/` 中的 38 个通用技能。
 
 ---
 

@@ -51,10 +51,10 @@ steps:
     skills: [test-strategy, loop-verification]
     quality_gate: "全量测试通过，边界用例覆盖"
 
-  - goal: "代码审查 + 安全检查"
-    description: "自审：硬编码密钥、注入、越权、资源泄漏"
-    skills: [code-review, security-governance]
-    quality_gate: "无安全高危漏洞；无硬编码密钥；无资源泄漏"
+  - goal: "代码审查 + 安全检查 + 防坏毛病"
+    description: "自审：硬编码密钥、注入、越权、资源泄漏；并运行 pragmatic-guard 排查重复造轮/冗余文件/虚假实现/过度设计/业务不合现实"
+    skills: [code-review, security-governance, pragmatic-guard]
+    quality_gate: "无安全高危漏洞；无硬编码密钥；pragmatic-guard.py 通过（exit 0）"
 
   - goal: "提交与文档交付"
     description: "按提交规范提交，更新 CHANGELOG"
@@ -70,6 +70,7 @@ post_task:
     - "无硬编码密钥/凭证"
     - "lint 无 error"
     - "CHANGELOG 已更新"
+    - "pragmatic-guard: python3 framework/lib/scripts/quality/pragmatic-guard.py --project . 返回 exit 0（无重复造轮/冗余/虚假/过度设计/不合业务）"
     - "loop-verification: 自动循环验证所有质量门禁，最多 3 轮"
   loop_config:
     max_loops: 3

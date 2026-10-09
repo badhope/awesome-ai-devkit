@@ -17,7 +17,7 @@ Awesome AI DevKit 是一个**跨平台的场景化 AI 编程配置生态**。它
 
 通用能力的实体存放在 **`framework/`** 目录：
 
-- `framework/skills/` — 通用技能库（`agentskills.io` 标准 `SKILL.md`，37+ 个）
+- `framework/skills/` — 通用技能库（`agentskills.io` 标准 `SKILL.md`，38+ 个）
 - `framework/agents/` — 通用多角色团队（跨场景复用）
 - `framework/mcp/` — 通用 MCP 全集
 - `framework/rules/` — 通用规则（权威在根 `rules/`）

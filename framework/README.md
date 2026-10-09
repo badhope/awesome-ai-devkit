@@ -20,7 +20,7 @@ framework/
 └── rules/       # 通用规则（根 rules/ 为权威，此处说明）
 ```
 
-## 通用技能库（framework/skills/，37+ 个）
+## 通用技能库（framework/skills/，38+ 个）
 
 | 类别 | 技能 |
 |------|------|

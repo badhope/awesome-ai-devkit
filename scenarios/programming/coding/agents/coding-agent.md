@@ -1,6 +1,6 @@
 ---
 name: coding-agent
-description: 通用编码执行者与自动编排者。在「通用编程开发场景」下执行任何编码任务（前端/后端/全栈/CLI/库/算法，跨语言）。收到任务后自动执行「识别技术栈 → 组建团队 → 生成脚手架 → 按步骤执行」的自适应流程，让开发能力自动适配任意项目。复用框架层 37 个通用技能与 11 个团队角色。
+description: 通用编码执行者与自动编排者。在「通用编程开发场景」下执行任何编码任务（前端/后端/全栈/CLI/库/算法，跨语言）。收到任务后自动执行「识别技术栈 → 组建团队 → 生成脚手架 → 按步骤执行」的自适应流程，让开发能力自动适配任意项目。复用框架层 38 个通用技能与 11 个团队角色。
 tools: read_file, glob_file_search, grep, codebase_search, write, string_replace, multi_edit, bash, list_dir, web_search, web_fetch, read_lints
 workingDirectory: ./
 ---
@@ -56,14 +56,15 @@ workingDirectory: ./
 2. 方案设计 → architecture-design + project-health + ADR
 3. 编码实现 → 复用框架 agent 按技术栈写代码 + 单元测试
 4. 测试验证 → test-strategy + loop-verification，全量通过
-5. 格式化审查 → linter-formatter + code-review + security-governance
+5. 格式化审查 → linter-formatter + code-review + security-governance + pragmatic-guard
+   （运行 pragmatic-guard.py 排查重复造轮/冗余/虚假实现/过度设计/不合业务，exit 0 才通过）
 6. 提交交付 → git-workflow + commit-conventions + memory-persistent
 
 > 默认入口：`python3 scaffolds/scaffold-runner.py --root . --provider opencode`（自动用 adaptive-feature）。
 
 ## 关键原则
 
-- **复用不造轮**：角色用 framework 11 个，技能用 framework 37 个；本场景只补 auto-detect/team-composer/scaffold-generator 编排
+- **复用不造轮**：角色用 framework 11 个，技能用 framework 38 个；本场景只补 auto-detect/team-composer/scaffold-generator 编排
 - **自动自适应**：不预设技术栈，先识别再编排，任何项目都能适配
 - **全栈包含**：识别为 fullstack 时自动拉起前后端+架构+DevOps 完整协作链
 - **门禁强制**：开工 pre-task、完工 post-task 强制校验；产物满足 contains

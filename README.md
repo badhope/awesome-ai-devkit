@@ -36,7 +36,7 @@ Works on **any tool that supports the Expert plugin standard**.
 
 ### Fullstack Dev Team *(included)*
 
-A complete product-to-operations pipeline: 11 universal roles (PM, Architect, Backend, Frontend, Design System, QA, Code Review, Security, DevOps, SRE, Database Engineer) and 37 reusable skills (code quality, security, context, automation, review, debugging, test strategy, planning, and more) in the `framework/` layer.
+A complete product-to-operations pipeline: 11 universal roles (PM, Architect, Backend, Frontend, Design System, QA, Code Review, Security, DevOps, SRE, Database Engineer) and 38 reusable skills (code quality, security, context, automation, review, debugging, test strategy, planning, and more) in the `framework/` layer.
 
 | What | Path |
 |------|------|
@@ -45,7 +45,7 @@ A complete product-to-operations pipeline: 11 universal roles (PM, Architect, Ba
 
 ### Universal Coding Scene *(included)*
 
-A cross-language, stack-agnostic coding foundation: covers the full "plan → code → test → refactor → commit" flow, reusing the 37 universal skills and 11 roles in `framework/`. Ideal for scripts, CLIs, libraries, algorithms, and any non-stack-specific task; can be inherited by fullstack, mobile, ml-native and other sub-scenes.
+A cross-language, stack-agnostic coding foundation: covers the full "plan → code → test → refactor → commit" flow, reusing the 38 universal skills and 11 roles in `framework/`. Ideal for scripts, CLIs, libraries, algorithms, and any non-stack-specific task; can be inherited by fullstack, mobile, ml-native and other sub-scenes.
 
 | What | Path |
 |------|------|
@@ -117,7 +117,7 @@ Registers the Fullstack scenario and other included content as an Expert in your
 ```
 awesome-ai-devkit/
 ├── framework/                   # Universal capability layer (cross-platform)
-│   ├── skills/                  # 37+ universal skill library (agentskills.io)
+│   ├── skills/                  # 38+ universal skill library (agentskills.io)
 │   ├── agents/                  # Universal dev-team roles (11)
 │   ├── mcp/                     # Universal MCP collection
 │   ├── lib/                     # Universal scripts

@@ -1,7 +1,7 @@
 # 全栈开发 — 场景脚手架库
 
 > 本目录包含全栈开发场景的 **可直接使用的脚手架配置**。
-> 所有脚手架中的 skill 引用均来自通用层 `framework/skills/` 目录（37 个通用技能）。
+> 所有脚手架中的 skill 引用均来自通用层 `framework/skills/` 目录（38 个通用技能）。
 
 ---
 
@@ -36,7 +36,7 @@ bash hooks/scripts/post-task.sh scaffold.yaml
 
 每个脚手架必须遵循以下原则：
 
-1. **Skill 复用通用层** — `framework/skills/` 中的 37 个通用技能
+1. **Skill 复用通用层** — `framework/skills/` 中的 38 个通用技能
 2. **Agent 来自本场景** — `../roles/` 表中定义的角色
 3. **每步 outputs 必须有 `contains`** — 产出物的关键验证点（协议字段名）
 4. **必须有 `post_task.quality_gates`** — 完工验收标准

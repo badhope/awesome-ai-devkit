@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - scenarios/programming/coding — 通用编程底座场景（跨语言/技术栈）：_index、coding-agent、3 个通用脚手架（feature-development/refactoring/incident-response）、coding-lifecycle 工作流、project 上下文、mcp 配置
-- framework/skills 新增 4 个通用技能：planning、refactoring、observability、session-continuation（通用技能库达 37）
+- framework/skills 新增 4 个通用技能：planning、refactoring、observability、session-continuation（通用技能库达 37，后增至 38）
 - 同步 README/README_zh/docs/experts 技能计数至 37，并将 coding 场景登记进场景索引
 
 ### Added — 自适应编排层（coding 场景升级为"全能自适应底座"）
@@ -31,6 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - stack-detector：修复普通 React 前端被 App.tsx 误判为 mobile（改为依赖含 react-native/expo 才判 mobile）
 - scaffold-runner：修复 scaffold 模板路径占位符（`<feature>`/`<module>`/`<ext>`）未替换导致的产物门禁误判缺失（影响 coding/fullstack 场景）；支持 `--feature` 覆盖与 glob 模糊匹配，并新增回归测试
+
+### Added — 防「AI 坏毛病」强制门禁（pragmatic-guard）
+- framework/lib/scripts/quality/pragmatic-guard.py — 可执行校验脚本，检测 5 类问题：重复造轮/冗余文件/虚假实现（pass/TODO/空函数体）/过度设计/业务不合现实（魔法数字/演示字符串/异常被吞）；退出码 0=通过、1=阻断
+- framework/skills/pragmatic-guard — 通用技能（5 类规则清单 + 门禁用法），所有编程场景继承
+- 挂进 coding adaptive-feature.yaml 的「代码审查」步骤与 post_task 门禁；coding-agent 审查阶段强制运行
+- framework 技能库 37→38；tests/test_pragmatic_guard.py 6 项单测（干净项目通过 / 各类坏毛病检出）
 
 ## [2.0.0] — 2026-10-09
 
