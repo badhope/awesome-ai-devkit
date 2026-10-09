@@ -36,7 +36,7 @@ Awesome AI DevKit 是一个跨平台的**场景化** AI 编程配置仓库。每
 
 ### 全栈开发团队 *(内置)*
 
-覆盖产品到运维的完整流水线：11 个专业角色（产品经理、架构师、后端、前端、设计系统、QA、代码审查、安全审查、DevOps、SRE、数据库工程师）和 21 个可复用技能（代码质量、安全、上下文、自动化等）。
+覆盖产品到运维的完整流水线：11 个通用角色（产品经理、架构师、后端、前端、设计系统、QA、代码审查、安全审查、DevOps、SRE、数据库工程师）和 33 个通用技能（代码质量、安全、上下文、自动化、审查、调试、测试策略等），位于 `framework/` 通用层。
 
 | 内容 | 路径 |
 |------|------|
@@ -107,17 +107,19 @@ cd /path/to/awesome-ai-devkit
 
 ```
 awesome-ai-devkit/
+├── framework/                   # 通用能力层（跨平台复用）
+│   ├── skills/              # 33+ 通用技能库（agentskills.io 标准）
+│   ├── agents/              # 通用开发团队角色（11 个）
+│   ├── mcp/                 # 通用 MCP 全集
+│   ├── lib/                 # 通用脚本库
+│   └── rules/               # 通用规则
 ├── scenarios/
-│   ├── programming/fullstack/   # 全栈开发团队场景
-│   │   ├── agents/              # 角色定义
-│   │   ├── skills/              # 可复用技能模块
+│   ├── programming/fullstack/   # 全栈开发团队场景（复用 framework）
 │   │   ├── scaffolds/           # 工作流模板
 │   │   ├── workflows/           # 分步操作手册
 │   │   ├── hooks/               # 生命周期钩子
-│   │   ├── context/             # 项目配置模板
-│   │   ├── mcp/                 # MCP 服务器配置
-│   │   └── lib/                 # 共享工具脚本
-│   └── ...                      # 更多场景（业务运营、ML、移动端等）
+│   │   └── context/             # 项目配置模板
+│   └── ...                      # 更多场景（业务运营、移动端等）
 ├── mcp/config/                  # 各平台 MCP 设置
 ├── roles/expanded/              # 扩展角色定义
 ├── docs/                        # 设计文档
@@ -146,3 +148,5 @@ awesome-ai-devkit/
 ## 许可证
 
 MIT © [badhope](https://gitcode.com/badhope)
+
+> AI生成

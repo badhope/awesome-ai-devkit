@@ -58,7 +58,7 @@ CURRENT_LOCALE="${LANG:-unknown}"
 CURRENT_OS="$(uname -s 2>/dev/null || echo 'Unknown')"
 
 # Count available skills
-SKILLS_DIR="scenarios/programming/fullstack/skills"
+SKILLS_DIR="framework/skills"
 SKILL_COUNT=0
 if [[ -d "${SKILLS_DIR}" ]]; then
     SKILL_COUNT="$(find "${SKILLS_DIR}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')"

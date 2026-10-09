@@ -301,7 +301,7 @@ post_task:
 hooks:
   agent_lifecycle:
     on_agent_end:
-      - script: "scenarios/programming/fullstack/skills/loop-verification/run-loop.sh"
+      - script: "framework/skills/loop-verification/run-loop.sh"
         timeout: 120
         description: "循环验证质量门禁直到全部通过"
         config:
@@ -319,3 +319,5 @@ hooks:
 | v1.0 | 初始版本：基础循环验证 + scaffold 集成 + devkit-doctor 协同 |
 | v1.1 (计划) | 并行门禁检查、增量验证（只检查变更相关门禁） |
 | v1.2 (计划) | 门禁结果缓存、跨循环学习修复策略 |
+
+> AI生成

@@ -77,7 +77,7 @@ features:
 # Agent 按 scaffold.yaml 执行任务时参考此配置
 scaffold:
   protocol_version: "2.0"
-  skills_base: "scenarios/programming/fullstack/skills"
+  skills_base: "framework/skills"
   roles_base: "scenarios/programming/fullstack/roles"
   default_scaffolds:
     feature: "scenarios/programming/fullstack/scaffolds/feature-development.yaml"

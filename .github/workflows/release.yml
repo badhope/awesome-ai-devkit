@@ -172,8 +172,8 @@ jobs:
 
           # ── 4. 项目结构完整性 ───────────────────────────────────────
           required_dirs = [
-              'scenarios/programming/fullstack/agents',
-              'scenarios/programming/fullstack/skills',
+              'framework/agents',
+              'framework/skills',
               'scenarios/programming/fullstack/scaffolds',
               'scenarios/programming/fullstack/hooks',
           ]

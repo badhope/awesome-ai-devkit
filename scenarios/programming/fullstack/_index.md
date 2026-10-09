@@ -95,7 +95,7 @@ bash hooks/scripts/post-task.sh scaffold.yaml
 | `scaffolds/incident-response.yaml` | 故障响应 | 5 | 10 |
 | `scaffolds/refactoring.yaml` | 代码重构 | 6 | 10 |
 
-> 所有场景脚手架中的 skill 引用均来自本场景 `skills/` 目录中的 19 个技能。
+> 场景脚手架中的 skill 引用复用通用层 `framework/skills/` 中的 33 个通用技能。
 
 ---
 
@@ -129,3 +129,5 @@ bash hooks/scripts/post-task.sh scaffold.yaml
 ## 致谢
 
 遵循 Awesome AI DevKit 框架 11 层架构，对标 2026.10 行业最佳实践（Codex / Claude Code / Qoder）。
+
+> AI生成

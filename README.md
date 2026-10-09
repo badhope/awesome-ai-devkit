@@ -36,7 +36,7 @@ Works on **any tool that supports the Expert plugin standard**.
 
 ### Fullstack Dev Team *(included)*
 
-A complete product-to-operations pipeline: 11 professional roles (PM, Architect, Backend, Frontend, Design System, QA, Code Review, Security, DevOps, SRE, Database Engineer) and 21 reusable skills (code quality, security, context, automation, and more).
+A complete product-to-operations pipeline: 11 universal roles (PM, Architect, Backend, Frontend, Design System, QA, Code Review, Security, DevOps, SRE, Database Engineer) and 33 reusable skills (code quality, security, context, automation, review, debugging, test strategy, and more) in the `framework/` layer.
 
 | What | Path |
 |------|------|
@@ -107,17 +107,19 @@ Registers the Fullstack scenario and other included content as an Expert in your
 
 ```
 awesome-ai-devkit/
+├── framework/                   # Universal capability layer (cross-platform)
+│   ├── skills/                  # 33+ universal skill library (agentskills.io)
+│   ├── agents/                  # Universal dev-team roles (11)
+│   ├── mcp/                     # Universal MCP collection
+│   ├── lib/                     # Universal scripts
+│   └── rules/                   # Universal rules
 ├── scenarios/
-│   ├── programming/fullstack/   # Fullstack Dev Team scenario
-│   │   ├── agents/              # Role definitions
-│   │   ├── skills/              # Reusable skill modules
+│   ├── programming/fullstack/   # Fullstack Dev Team scenario (reuses framework)
 │   │   ├── scaffolds/           # Workflow templates
 │   │   ├── workflows/           # Step-by-step playbooks
 │   │   ├── hooks/               # Lifecycle hooks
-│   │   ├── context/             # Project config templates
-│   │   ├── mcp/                 # MCP server configs
-│   │   └── lib/                 # Shared utility scripts
-│   └── ...                      # More scenarios (business-ops, ml, mobile, etc.)
+│   │   └── context/             # Project config templates
+│   └── ...                      # More scenarios (business-ops, mobile, etc.)
 ├── mcp/config/                  # Platform-specific MCP settings
 ├── roles/expanded/              # Extended role definitions
 ├── docs/                        # Design docs
@@ -146,3 +148,5 @@ awesome-ai-devkit/
 ## License
 
 MIT © [badhope](https://gitcode.com/badhope)
+
+> AI生成

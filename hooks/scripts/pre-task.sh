@@ -98,7 +98,7 @@ fi
 
 # ── Step 6: skills 引用检查（兼容 v1.0 + v2.0 格式） ──────────────
 MISSING_SKILLS=0
-SKILLS_DIR="scenarios/programming/fullstack/skills"
+SKILLS_DIR="framework/skills"
 
 while IFS= read -r skill_id; do
     skill_id="$(echo "${skill_id}" | xargs)"

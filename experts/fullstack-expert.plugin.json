@@ -56,7 +56,7 @@
       ]
     },
     "skills": {
-      "path": "../../scenarios/programming/fullstack/skills/",
+      "path": "../../framework/skills/",
       "count": 23,
       "categories": {
         "workflow": ["scaffold-workflow", "instruction-grooming", "task-tracker", "integration-patterns"],

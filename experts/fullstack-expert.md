@@ -3,8 +3,8 @@ name: fullstack-expert
 description: 全栈开发终极专家——整合框架全部 11 层能力，跨角色/技能/工具统一编排
 layer: 7-Expert
 version: 1.0.0
-roles_covered: 20+
-skills_covered: 52
+roles_covered: 11
+skills_covered: 33
 tools_covered: 25
 mcp_servers: 16
 ---
@@ -89,3 +89,5 @@ Layer 11 Validation→ checks.py 全量校验
 - 部署配置（docker-compose / CI pipeline）
 - ADR 文档（架构决策记录）
 - CHANGELOG + Release Notes
+
+> AI生成
