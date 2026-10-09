@@ -15,7 +15,6 @@
 
 # ── Paths ─────────────────────────────────────────────────────────
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$ProjectRoot = Split-Path (Split-Path $ScriptDir -Parent) -Parent
 $MCPConfig = Join-Path $ScriptDir "mcp\mcp-config.yaml"
 $ContextDir = Join-Path $ScriptDir "context"
 
@@ -51,7 +50,6 @@ $Missing = 0
 if (-not (Test-Tool "git"))    { $Missing++; Write-Info "安装: https://git-scm.com/downloads" }
 if (-not (Test-Tool "node"))   { $Missing++; Write-Info "安装: https://nodejs.org" }
 if (-not (Test-Tool "python")) { $Missing++; Write-Info "安装: https://python.org" }
-if (-not (Test-Tool "python3")) { $Missing++; Write-Info "安装: https://python.org" }
 if (-not (Test-Tool "npx"))    { $Missing++; Write-Info "随 Node.js 安装" }
 
 if (Get-Command "docker" -ErrorAction SilentlyContinue) {
@@ -96,7 +94,7 @@ Write-Host "[3/4] MCP servers 配置..." -ForegroundColor White
 
 if (Test-Path $MCPConfig) {
     # 用 Python 解析启用的 servers
-    $ServersRaw = python3 -c @"
+    $ServersRaw = python -c @"
 import yaml, sys, json
 with open('$($MCPConfig -replace '\\','\\')') as f:
     data = yaml.safe_load(f)
@@ -124,9 +122,10 @@ Write-Host ""
 Write-Host "[4/4] 环境就绪检查..." -ForegroundColor White
 
 $FinalOK = $true
+$SkillCount = @(Get-ChildItem (Join-Path $ScriptDir "skills") -Directory -ErrorAction SilentlyContinue).Count
 
 if (Test-Path $ProjectYaml) { Write-Ok "project.yaml" } else { Write-Err "project.yaml 不存在"; $FinalOK = $false }
-if (Test-Path (Join-Path $ScriptDir "skills")) { Write-Ok "skills/ (52 个技能)" } else { Write-Err "skills/ 缺失"; $FinalOK = $false }
+if (Test-Path (Join-Path $ScriptDir "skills")) { Write-Ok "skills/ ($SkillCount 个技能)" } else { Write-Err "skills/ 缺失"; $FinalOK = $false }
 if (Test-Path (Join-Path $ScriptDir "scaffolds")) { Write-Ok "scaffolds/ (3 个工作流)" } else { Write-Warn "scaffolds/ 缺失" }
 
 Write-Host ""
