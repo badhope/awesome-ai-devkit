@@ -79,9 +79,18 @@ Awesome AI DevKit 是一个**跨平台的场景化 AI 编程配置生态**。它
 
 **分层强制（不只靠提示，靠机制）**：提示词只约束"自觉"，以下机制把关键动作变成"**不通过就失败**"，平台无关：
 
-- **L1 机制层**：`hooks/scripts/enforce_active.py`（跨平台门禁：项目上下文 / doctor / 测试 / 密钥 / CHANGELOG）。完工与开工均挂载在 `hooks/config.yaml`。
+- **L1 机制层**：`hooks/scripts/enforce_active.py`（跨平台门禁：项目上下文 / doctor / 测试 / 密钥 / CHANGELOG / **pragmatic-guard**）。完工与开工均挂载在 `hooks/config.yaml`。
 - **L2 平台原生钩子**：有 hooks 的平台（Claude Code / Cursor 等）把 `enforce_active.py` 挂到原生事件，见 `platforms/README.md`。
 - **L3 结果门禁**：`quality_gate` / CI / `devkit-doctor` —— 不满足即判定失败。
+- **防「AI 坏毛病」门禁（pragmatic-guard）**：`framework/lib/scripts/quality/pragmatic-guard.py`（已并入 enforce_active 完工链）。产出代码必须通过它，否则**拒绝提交/完工**。它拦截 5 类 AI 坏毛病：
+  1. **重复造轮子** — 已有库/框架可完成却手写；实现前先查依赖与现有代码
+  2. **冗余文件** — 空文件、无用命名（placeholder/dummy/stub）、未被引用文件
+  3. **虚假实现** — `pass`/`TODO`/`FIXME`/`NotImplementedError`/空函数体/占位 `return None`
+  4. **过度设计** — 过度工厂/无用配置类/命名堆叠/永假分支（YAGNI + KISS）
+  5. **业务不合现实** — 魔法数字（>4 位）、演示字符串（hello/world）、try 无 except（异常被吞）
+  ```
+  python3 framework/lib/scripts/quality/pragmatic-guard.py --project .   # 0=通过，1=整改后重跑
+  ```
 
 在任务中执行：
 

@@ -43,6 +43,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 加入 enforce_active.py 完工强制链（第 7 项门禁：pragmatic-guard exit 0 才通过）
 - 提高检测精度：排除 framework 层自身/测试/文档/示例目录、except:pass 不再误报、魔法数字排除字符串与端口/日期、收紧 return None 与空函数体正则——仓库自身扫描从 30+ 误报降为 0，坏项目仍精确检出
 
+### Added — AGENTS.md 强制机制说明 + 坏毛病整改案例
+- AGENTS.md §5 质量与安全门禁：补充 pragmatic-guard 为 L1 机制门禁，列出 5 类坏毛病检测规则与用法
+- scenarios/programming/coding/examples/pragmatic-remediation — 「AI 坏毛病整改」完整案例（5 类坏代码 → 门禁报错 → 整改对照），并登记进 examples 索引
+
 ## [2.0.0] — 2026-10-09
 
 ### Added
