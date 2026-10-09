@@ -7,7 +7,9 @@
 [![欢迎 PR](https://img.shields.io/badge/PR-欢迎-brightgreen.svg)](https://github.com/x33834/awesome-ai-devkit/pulls)
 [![官网](https://img.shields.io/badge/官网-在线-success.svg)](https://x33834.github.io/awesome-ai-devkit/)
 
-**AI 编程配置生态** — 模块化场景，将 AI 编码工具变成完整的开发团队。基于任何支持专家插件标准的平台运行。
+**AI 编程配置生态** — 模块化、场景化的配置，把 AI 编码工具（Claude Code、Cursor、Codex、Gemini、Cline、opencode）变成完整的 **AI 开发团队**。即插即用的角色、技能、工作流与质量门禁，适用于任何领域。基于任何支持 **AGENTS.md / Expert 插件**标准的平台运行。
+
+> 跨平台 · 场景化 · AI 开发团队自动化 · 提示词工程 · Agent 编排 · 代码质量门禁
 
 [🇨🇳 中文](README_zh.md) | [🌐 English](README.md)
 
@@ -145,6 +147,7 @@ awesome-ai-devkit/
 | Gitee | https://gitee.com/badhope/awesome-ai-devkit | 国内镜像 |
 | GitHub | https://github.com/X33834/awesome-ai-devkit | **官网 + Release** |
 | GitHub | https://github.com/Morningstar202604/awesome-ai-devkit | 备用镜像 |
+| GitHub | https://github.com/badhope/awesome-ai-devkit | 备用镜像 |
 
 ## 相关链接
 

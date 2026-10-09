@@ -7,7 +7,9 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/x33834/awesome-ai-devkit/pulls)
 [![Website](https://img.shields.io/badge/website-live-success.svg)](https://x33834.github.io/awesome-ai-devkit/)
 
-**AI Coding Configuration Ecosystem** — modular scenarios that turn AI coding tools into full development teams. Runs on any platform that supports the Expert plugin standard.
+**AI Coding Configuration Ecosystem** — modular, scenario-based configurations that turn AI coding tools (Claude Code, Cursor, Codex, Gemini, Cline, opencode) into full **AI development teams**. Plug-and-play roles, skills, workflows, and quality gates for any domain. Runs on any platform that supports the **AGENTS.md / Expert plugin** standard.
+
+> Cross-platform · Scenario-based · AI dev-team automation · Prompt engineering · Agent orchestration · Code quality gates
 
 [🇨🇳 中文](README_zh.md) | [🌐 English](README.md)
 
@@ -145,6 +147,7 @@ awesome-ai-devkit/
 | Gitee | https://gitee.com/badhope/awesome-ai-devkit | China mirror |
 | GitHub | https://github.com/X33834/awesome-ai-devkit | **Website + Release** |
 | GitHub | https://github.com/Morningstar202604/awesome-ai-devkit | Backup mirror |
+| GitHub | https://github.com/badhope/awesome-ai-devkit | Alt mirror |
 
 ## Links
 
