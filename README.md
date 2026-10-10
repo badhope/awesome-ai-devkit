@@ -2,8 +2,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://github.com/x33834/awesome-ai-devkit/releases/tag/v2.0.0)
+[![CI](https://github.com/x33834/awesome-ai-devkit/actions/workflows/ci.yml/badge.svg)](https://github.com/x33834/awesome-ai-devkit/actions)
+[![Python](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
 [![Scenarios](https://img.shields.io/badge/scenarios-1-blue.svg)](scenarios/)
-[![Source](https://img.shields.io/badge/source%20platforms-4-lightgrey.svg)](#source-code--4-platforms)
+[![Source](https://img.shields.io/badge/source%20platforms-5-lightgrey.svg)](#source-code)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/x33834/awesome-ai-devkit/pulls)
 [![Website](https://img.shields.io/badge/website-live-success.svg)](https://x33834.github.io/awesome-ai-devkit/)
 
