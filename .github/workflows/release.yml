@@ -7,215 +7,55 @@
 
 name: Release
 
-# ── 触发条件：仅当推送 v* 标签时触发 ─────────────────────────────────
 on:
   push:
     tags:
       - "v*"
 
-# ── 权限：需要写权限来创建 Release 和上传资产 ─────────────────────────
 permissions:
   contents: write
   discussions: write
 
-# ── 任务定义 ─────────────────────────────────────────────────────────
 jobs:
-
-  # ═══════════════════════════════════════════════════════════════════
-  # Job: build-and-release — 构建并发布
-  #   - 从 CHANGELOG.md 提取当前版本的变更摘要
-  #   - 创建 GitHub Release (含自动生成的标签和说明)
-  # ═══════════════════════════════════════════════════════════════════
   build-and-release:
     name: 构建与发布 — Changelog + GitHub Release
     runs-on: ubuntu-latest
 
     steps:
-      # ── 步骤 1: 检出代码 ──────────────────────────────────────────
       - name: 检出代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 获取完整历史以生成 changelog
+          fetch-depth: 0
 
-      # ── 步骤 2: 提取版本号 ───────────────────────────────────────
       - name: 提取版本号
         id: version
         run: |
-          # 从 tag 名提取版本号 (如 v1.4.4 → 1.4.4)
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           echo "当前版本: $VERSION"
-          echo "对应标签: ${GITHUB_REF#refs/tags/}"
 
-      # ── 步骤 3: 生成 Changelog 摘要 ───────────────────────────────
       - name: 生成 Changelog 摘要
         id: changelog
         run: |
-          CHANGELOG_FILE="CHANGELOG.md"
-
+          VERSION="${{ steps.version.outputs.version }}"
+          echo "从 CHANGELOG.md 提取 v${VERSION} 的变更记录..."
+          RELEASE_NOTES=$(python3 scripts/changelog_extract.py "$VERSION")
           echo "## 变更摘要" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          echo "$RELEASE_NOTES" >> $GITHUB_STEP_SUMMARY
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-          if [ -f "$CHANGELOG_FILE" ]; then
-            # 从 CHANGELOG.md 提取当前版本对应的段落
-            # 匹配 ## [vX.Y.Z] 或 ## [Unreleased] 开头，到下一个 ## 结束
-            VERSION="${{ steps.version.outputs.version }}"
-
-            echo "从 CHANGELOG.md 提取 v${VERSION} 的变更记录..."
-
-            # 提取当前版本的变更段落 (兼容 [v1.4.4] 和 [1.4.4] 两种格式)
-            RELEASE_NOTES=$(python3 -c "
-          import re, sys
-          from pathlib import Path
-
-          changelog = Path('$CHANGELOG_FILE').read_text(encoding='utf-8')
-          version = '$VERSION'
-
-          # 匹配版本标题: ## [v1.4.4] 或 ## [1.4.4]
-          pattern = rf'^## \[v?{re.escape(version)}\].*$'
-          lines = changelog.split('\n')
-
-          start = -1
-          for i, line in enumerate(lines):
-              if re.match(pattern, line.strip()):
-                  start = i
-                  break
-
-          if start == -1:
-              print(f'⚠ 在 CHANGELOG.md 中未找到 v{version} 的变更记录')
-              sys.exit(0)
-
-          # 收集到下一个 ## 标题之前的所有内容
-          end = len(lines)
-          for i in range(start + 1, len(lines)):
-              if lines[i].strip().startswith('## '):
-                  end = i
-                  break
-
-          section = '\n'.join(lines[start:end]).strip()
-          if section:
-              print(section)
-          else:
-              print(f'(v{version} 的变更记录为空)')
-          ")
-
-            echo "$RELEASE_NOTES" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-
-            # 保存到输出变量 (处理多行)
-            echo "notes<<EOF" >> $GITHUB_OUTPUT
-            echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-
-          else
-            echo "⚠ CHANGELOG.md 不存在，跳过 Changelog 摘要"
-            echo "(无 changelog 文件)" >> $GITHUB_STEP_SUMMARY
-            echo "notes=无 changelog 文件" >> $GITHUB_OUTPUT
-          fi
-
-      # ── 步骤 4: 设置 Python 用于验证 ──────────────────────────────
       - name: 设置 Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      # ── 步骤 5: 发布前完整性验收 ──────────────────────────────────
       - name: 发布前完整性验收
-        run: |
-          python3 -c "
-          import sys, re
-          from pathlib import Path
+        run: python3 scripts/release_check.py
 
-          errors = []
-          warnings = []
-
-          # ── 1. LICENSE 文件存在 ─────────────────────────────────────
-          license_files = list(Path('.').glob('LICENSE*'))
-          if not license_files:
-              errors.append('LICENSE 文件缺失')
-          else:
-              print(f'✓ LICENSE 文件存在: {license_files[0]}')
-
-          # ── 2. README 双语完整 ─────────────────────────────────────
-          readme_en = Path('README.md')
-          readme_zh = Path('README_zh.md')
-          if not readme_en.exists():
-              errors.append('README.md 缺失')
-          else:
-              en_size = readme_en.stat().st_size
-              if en_size < 1000:
-                  warnings.append(f'README.md 内容偏少 ({en_size} bytes)')
-              else:
-                  print(f'✓ README.md ({en_size} bytes)')
-
-          if not readme_zh.exists():
-              errors.append('README_zh.md 缺失')
-          else:
-              zh_size = readme_zh.stat().st_size
-              if zh_size < 1000:
-                  warnings.append(f'README_zh.md 内容偏少 ({zh_size} bytes)')
-              else:
-                  print(f'✓ README_zh.md ({zh_size} bytes)')
-
-          # ── 3. CHANGELOG 格式正确 ───────────────────────────────────
-          changelog = Path('CHANGELOG.md')
-          if not changelog.exists():
-              warnings.append('CHANGELOG.md 缺失')
-          else:
-              content = changelog.read_text(encoding='utf-8')
-              # 检查是否有 Unreleased 或具体版本号
-              if '[Unreleased]' not in content and not re.search(r'## \[\d+\.\d+\.\d+\]', content):
-                  warnings.append('CHANGELOG.md 格式不规范 (缺少版本标题)')
-              else:
-                  print(f'✓ CHANGELOG.md 格式正确')
-
-          # ── 4. 项目结构完整性 ───────────────────────────────────────
-          required_dirs = [
-              'framework/agents',
-              'framework/skills',
-              'scenarios/programming/fullstack/scaffolds',
-              'scenarios/programming/fullstack/hooks',
-          ]
-          for d in required_dirs:
-              if not Path(d).exists():
-                  errors.append(f'必要目录缺失: {d}')
-              else:
-                  print(f'✓ {d}')
-
-          # ── 5. 核心配置文件检查 ─────────────────────────────────────
-          config_files = [
-              '.env.example',
-              '.gitignore',
-              'hooks/config.yaml',
-          ]
-          for f in config_files:
-              if not Path(f).exists():
-                  warnings.append(f'配置缺失: {f}')
-              else:
-                  print(f'✓ {f}')
-
-          print(f'\\n{\"=\" * 50}')
-          print(f'发布前验收结果')
-          print(f'  错误:   {len(errors)}')
-          print(f'  警告:   {len(warnings)}')
-          print(f'{\"=\" * 50}')
-
-          if warnings:
-              print('\\n警告项:')
-              for w in warnings:
-                  print(f'  ⚠ {w}')
-
-          if errors:
-              print('\\n验收失败，阻止发布:')
-              for e in errors:
-                  print(f'  ✗ {e}')
-              sys.exit(1)
-
-          print('\\n✓ 发布前验收通过')
-
-      # ── 步骤 6: 创建 GitHub Release ────────────────────────────────
-      # 使用 gh CLI（预装于 GitHub Actions runner），替代已废弃的 actions/create-release
       - name: 创建 GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -228,7 +68,6 @@ jobs:
             --title "v${{ steps.version.outputs.version }}" \
             --notes "$NOTES" $FLAGS
 
-      # ── 步骤 7: 输出发布摘要 ──────────────────────────────────────
       - name: 输出发布摘要
         if: always()
         run: |
