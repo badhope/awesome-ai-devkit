@@ -143,17 +143,28 @@ awesome-ai-devkit/
 
 ## 源码
 
-| 平台 | 地址 | 用途 |
-|------|------|------|
-| GitCode | https://gitcode.com/badhope/awesome-ai-devkit | **主仓库** |
-| Gitee | https://gitee.com/badhope/awesome-ai-devkit | 国内镜像 |
-| GitHub | https://github.com/X33834/awesome-ai-devkit | **官网 + Release** |
-| GitHub | https://github.com/Morningstar202604/awesome-ai-devkit | 备用镜像 |
-| GitHub | https://github.com/badhope/awesome-ai-devkit | 备用镜像 |
+| 平台 | 账号 | 地址 | 用途 |
+|------|------|------|------|
+| GitCode | badhope | https://gitcode.com/badhope/awesome-ai-devkit | **主仓库** |
+| Gitee | badhope | https://gitee.com/badhope/awesome-ai-devkit | 国内镜像 |
+| GitHub | badhope | https://github.com/badhope/awesome-ai-devkit | 备用镜像 |
+| GitHub | X33834 | https://github.com/X33834/awesome-ai-devkit | 发布 |
+| GitHub | Morningstar202604 | https://github.com/Morningstar202604/awesome-ai-devkit | 备用镜像 |
+
+GitCode 与 Gitee 使用同一个 **badhope** 账号。
+
+## 官网（GitHub Pages）
+
+每个 GitHub 账号各自从 `main`（`/docs`）部署自己的站点：
+
+| 账号 | 官网 |
+|------|------|
+| badhope | https://badhope.github.io/awesome-ai-devkit/ |
+| X33834 | https://x33834.github.io/awesome-ai-devkit/ |
+| Morningstar202604 | https://morningstar202604.github.io/awesome-ai-devkit/ |
 
 ## 相关链接
 
-- 官网: https://x33834.github.io/awesome-ai-devkit/
 - 发布页: https://github.com/X33834/awesome-ai-devkit/releases
 - 问题反馈: https://github.com/X33834/awesome-ai-devkit/issues
 

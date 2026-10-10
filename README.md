@@ -143,17 +143,28 @@ awesome-ai-devkit/
 
 ## Source Code
 
-| Platform | URL | Purpose |
-|----------|-----|---------|
-| GitCode | https://gitcode.com/badhope/awesome-ai-devkit | **Primary repo** |
-| Gitee | https://gitee.com/badhope/awesome-ai-devkit | China mirror |
-| GitHub | https://github.com/X33834/awesome-ai-devkit | **Website + Release** |
-| GitHub | https://github.com/Morningstar202604/awesome-ai-devkit | Backup mirror |
-| GitHub | https://github.com/badhope/awesome-ai-devkit | Alt mirror |
+| Platform | Account | Code | Purpose |
+|----------|---------|------|---------|
+| GitCode | badhope | https://gitcode.com/badhope/awesome-ai-devkit | **Primary repo** |
+| Gitee | badhope | https://gitee.com/badhope/awesome-ai-devkit | China mirror |
+| GitHub | badhope | https://github.com/badhope/awesome-ai-devkit | Alt mirror |
+| GitHub | X33834 | https://github.com/X33834/awesome-ai-devkit | Release |
+| GitHub | Morningstar202604 | https://github.com/Morningstar202604/awesome-ai-devkit | Backup mirror |
+
+GitCode & Gitee share the **badhope** account.
+
+## Websites (GitHub Pages)
+
+Each GitHub account deploys its own site from `main` (`/docs`):
+
+| Account | Website |
+|---------|---------|
+| badhope | https://badhope.github.io/awesome-ai-devkit/ |
+| X33834 | https://x33834.github.io/awesome-ai-devkit/ |
+| Morningstar202604 | https://morningstar202604.github.io/awesome-ai-devkit/ |
 
 ## Links
 
-- Website: https://x33834.github.io/awesome-ai-devkit/
 - Releases: https://github.com/X33834/awesome-ai-devkit/releases
 - Report issues: https://github.com/X33834/awesome-ai-devkit/issues
 
