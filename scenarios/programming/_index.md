@@ -53,5 +53,3 @@ after_tool_call:  [log-writer, cache-write, metrics-push]
 on_agent_start:   [context-loader, env-check]
 on_agent_error:  [alert-dispatcher]
 ```
-
-> AI生成

@@ -120,5 +120,3 @@ coding/
 ---
 
 遵循 Awesome AI DevKit 框架分层架构，对标 2026.10 行业最佳实践（Codex / Claude Code / Qoder / opencode）。
-
-> AI生成

@@ -200,5 +200,3 @@ python3 framework/lib/scripts/quality/pragmatic-guard.py --project .
 # 3. 完工门禁
 python3 hooks/scripts/enforce_active.py
 ```
-
-> AI生成

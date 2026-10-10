@@ -65,5 +65,3 @@ dist/                              # vite build 产物
 python3 scenarios/programming/coding/lib/stack-detector.py --project . --json
 python3 scaffolds/scaffold-runner.py --root . --provider opencode
 ```
-
-> AI生成

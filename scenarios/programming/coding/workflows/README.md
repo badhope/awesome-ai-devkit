@@ -16,5 +16,3 @@ awesome-devkit workflow run coding-lifecycle --task "描述任务"
 ```
 
 > 深度细节（具体技术栈的实现）请参考 `fullstack` 等具体化子场景的工作流。
-
-> AI生成

@@ -89,5 +89,3 @@ L3 门禁     CI / quality_gate / doctor       → 最终校验，不通过即�
 - `AGENTS.md`（根）— 统一指令权威（含平台自省声明 + 强制主动使用机制）
 - `mcp/config/` — 各平台 MCP 配置（官方格式）
 - `scenarios/<场景>/` — 领域专用内容（按需加载）
-
-> AI生成

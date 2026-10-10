@@ -33,5 +33,3 @@ This Code of Conduct is adapted from the [Contributor Covenant][homepage], versi
 For answers to common questions, see https://www.contributor-covenant.org/faq
 
 [homepage]: https://www.contributor-covenant.org
-
-> AI生成

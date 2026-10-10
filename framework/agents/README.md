@@ -33,5 +33,3 @@
 - 通用技能：`framework/skills/`
 - 统一指令：根 `AGENTS.md`
 - 完整全栈团队示例：`scenarios/programming/fullstack/`
-
-> AI生成

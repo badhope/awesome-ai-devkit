@@ -129,5 +129,3 @@ bash hooks/scripts/post-task.sh scaffold.yaml
 ## 致谢
 
 遵循 Awesome AI DevKit 框架 11 层架构，对标 2026.10 行业最佳实践（Codex / Claude Code / Qoder）。
-
-> AI生成

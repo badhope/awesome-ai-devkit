@@ -822,6 +822,37 @@ a:hover { color: #22d3ee; }
   .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
 }
 
+/* ─── Extra small-screen responsive fixes ─── */
+@media (max-width: 640px) {
+  .hero { padding: 108px 0 60px; }
+  .section { padding: 64px 0; }
+  .section-sm { padding: 48px 0; }
+  .section-header { margin-bottom: 40px; }
+  .install-block { margin-bottom: 36px; }
+  .install-block .terminal-body {
+    flex-direction: column; align-items: stretch; gap: 10px;
+  }
+  .install-block code { font-size: .8rem; }
+  .copy-btn { align-self: flex-end; }
+  .code-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .code-tab { flex: none; white-space: nowrap; }
+  .code-panel pre { padding: 14px; font-size: .76rem; }
+  /* 架构列表：取消阶梯缩进，避免小屏溢出 */
+  .arch-layer .arch-layer-bar { margin-left: 0 !important; margin-right: 0 !important; }
+  .arch-name { font-size: .85rem; }
+  .feature-card { padding: 24px; }
+  .scenario-highlight { padding: 28px 20px; }
+  .footer { padding: 32px 0 28px; }
+  .footer-links { flex-direction: column; gap: 22px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 560px) {
+  .stats-grid { gap: 14px; }
+  .stat-number { font-size: 2.4rem; }
+  .nav-links.open { padding: 14px 20px; }
+  .footer-links { gap: 18px; }
+}
+
 /* ─── Utilities ─── */
 .sr-only {
   position: absolute; width: 1px; height: 1px;
@@ -843,8 +874,9 @@ a:hover { color: #22d3ee; }
     <div class="nav-links" id="navLinks">
       <a href="#features">Features</a>
       <a href="#scenarios">Scenarios</a>
-      <a href="#quickstart">Quick Start</a>
-      <a href="#faq">FAQ</a>
+      <a href="fullstack.html">Fullstack</a>
+      <a href="coding.html">Coding</a>
+      <a href="framework.html">Framework</a>
       <a href="pragmatic-guard.html">Pragmatic Guard</a>
       <a href="https://github.com/x33834/awesome-ai-devkit" class="nav-cta" target="_blank" rel="noopener">GitHub</a>
     </div>
@@ -1264,6 +1296,13 @@ a:hover { color: #22d3ee; }
           <a href="#scenarios">内置场景</a>
           <a href="#quickstart">快速上手</a>
           <a href="#faq">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <h4>文档</h4>
+          <a href="fullstack.html">全栈开发场景</a>
+          <a href="coding.html">自适应编码场景</a>
+          <a href="framework.html">通用能力层</a>
+          <a href="pragmatic-guard.html">Pragmatic Guard</a>
         </div>
         <div class="footer-col">
           <h4>平台</h4>

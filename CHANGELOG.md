@@ -103,5 +103,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - pre-task.sh nested $() syntax error
 - error-alert.sh JSON parsing failure in Git Bash
 - Cross-platform bootstrap path + Python invocation
-
-> AI生成

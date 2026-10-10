@@ -157,5 +157,3 @@ requirements → design → implement → test → review → commit
 | 测试失败 | 返回 Stage 3 修复后重测 |
 | 审查不通过 | 返回 Stage 3 修复后重审 |
 | 发现安全漏洞 | 立即修复，触发 incident-response 工作流 |
-
-> AI生成

@@ -162,5 +162,3 @@ awesome-ai-devkit/
 ## 许可证
 
 MIT © [badhope](https://gitcode.com/badhope)
-
-> AI生成

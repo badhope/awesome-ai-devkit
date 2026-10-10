@@ -36,5 +36,3 @@
 
 - **用官方 MCP**，不自造工具协议。
 - **默认启用**必要的（filesystem/git/github/postgres/playwright），其余按场景按需，避免资源浪费与密钥暴露。
-
-> AI生成

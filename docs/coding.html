@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Awesome AI DevKit — 自适应编码场景（Coding）。auto-detect 技术栈识别 + team-composer 自动组队 + scaffold-generator 动态脚手架，一个场景适配任意技术栈。">
+<meta name="keywords" content="coding,auto-detect,scaffold,team-composer,stack,react,go,rust,python,mobile,ai">
+<meta name="author" content="Awesome AI DevKit Team">
+<meta name="theme-color" content="#0a0e1a">
+<meta property="og:title" content="自适应编码场景 | Awesome AI DevKit">
+<meta property="og:description" content="auto-detect 识别技术栈 → team-composer 组队 → scaffold-generator 生成脚手架，一次搞定任意技术栈。">
+<title>自适应编码场景 | Awesome AI DevKit</title>
+<style>
+:root {
+  --bg: #0a0e1a; --bg-elevated: #0f1629; --card: #111d35; --card-hover: #162442;
+  --border: #1e2d4a; --border-light: #2a3f65;
+  --text: #e2e8f0; --text-muted: #8899b4; --text-dim: #5a6a85;
+  --accent-1: #6366f1; --accent-2: #8b5cf6; --accent-3: #06b6d4;
+  --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  --gradient-text: linear-gradient(135deg, #818cf8 0%, #a78bfa 40%, #22d3ee 100%);
+  --green: #10b981; --green-bg: rgba(16,185,129,.1);
+  --radius: 12px; --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,.3); --transition: .2s cubic-bezier(.4,0,.2,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 16px; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: var(--accent-3); text-decoration: none; transition: color var(--transition); }
+a:hover { color: #22d3ee; }
+.nav { position: sticky; top: 0; z-index: 100; background: rgba(10,14,26,.9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+.nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 60px; }
+.nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #fff; }
+.nav-logo .icon { width: 26px; height: 26px; border-radius: 7px; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 13px; color: #fff; font-weight: 900; }
+.nav-links { display: flex; align-items: center; gap: 20px; }
+.nav-links a { color: var(--text-muted); font-size: .84rem; font-weight: 500; }
+.nav-links a:hover { color: #fff; }
+.nav-links a.active { color: #fff; }
+.nav-cta { background: var(--gradient); color: #fff !important; padding: 6px 14px; border-radius: 18px; font-weight: 600; }
+.nav-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; padding: 4px 8px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.hero { position: relative; padding: 120px 0 80px; text-align: center; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 900px; height: 600px; background: radial-gradient(ellipse at center, rgba(99,102,241,.15) 0%, rgba(139,92,246,.08) 40%, transparent 70%); pointer-events: none; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 18px; font-size: .82rem; color: var(--text-muted); margin-bottom: 28px; }
+.hero-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px rgba(16,185,129,.6); }
+.hero h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.15; color: #fff; margin-bottom: 18px; }
+.hero h1 .gradient { background: var(--gradient-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-sub { font-size: clamp(1rem, 2vw, 1.15rem); color: var(--text-muted); max-width: 640px; margin: 0 auto; line-height: 1.6; }
+.section { padding: 84px 0; }
+.section-alt { background: linear-gradient(180deg, var(--bg) 0%, var(--bg-elevated) 50%, var(--bg) 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.section-header { text-align: center; margin-bottom: 52px; }
+.section-tag { display: inline-block; font-size: .78rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 14px; }
+.section-title { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 700; letter-spacing: -.02em; color: #fff; margin-bottom: 12px; }
+.section-desc { font-size: 1.02rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+.grid { display: grid; gap: 20px; }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; transition: var(--transition); }
+.card:hover { transform: translateY(-3px); border-color: var(--border-light); box-shadow: var(--shadow); }
+.card .num { font-size: .78rem; font-weight: 700; color: var(--accent-1); font-family: ui-monospace, monospace; }
+.card h4 { font-size: 1.02rem; color: #fff; margin: 8px 0 8px; }
+.card p { font-size: .9rem; color: var(--text-muted); line-height: 1.6; }
+.card .tag { display: inline-block; font-size: .72rem; font-weight: 600; padding: 3px 10px; border-radius: 6px; margin-top: 10px; background: var(--green-bg); color: var(--green); }
+.pipeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 980px; margin: 0 auto; }
+.pipe-step { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; text-align: center; position: relative; }
+.pipe-step .pn { width: 44px; height: 44px; border-radius: 50%; background: var(--gradient); color: #fff; font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+.pipe-step h4 { color: #fff; font-size: 1.02rem; margin-bottom: 8px; }
+.pipe-step p { color: var(--text-muted); font-size: .86rem; line-height: 1.55; }
+.pipe-arrow { display: none; }
+.stacks { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 760px; margin: 0 auto; }
+.stack-tag { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 8px 18px; font-size: .88rem; color: var(--text); font-weight: 500; }
+.stack-tag b { color: var(--accent-2); }
+.gate { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 13.5px; margin: 0 auto; max-width: 760px; text-align: left; overflow-x: auto; }
+.gate .ok { color: var(--green); }
+.gate .cm { color: var(--text-dim); }
+.footer { border-top: 1px solid var(--border); padding: 40px 0 32px; background: var(--bg-elevated); }
+.footer .fnav { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; font-size: .84rem; margin-bottom: 18px; }
+.footer p { text-align: center; color: var(--text-dim); font-size: .82rem; }
+@media (max-width: 1024px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } .pipeline { grid-template-columns: 1fr; } }
+@media (max-width: 800px) { .nav-links { display: none; } .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 14px 24px; gap: 14px; } .nav-toggle { display: flex; } }
+@media (max-width: 640px) { .hero { padding: 96px 0 56px; } .section { padding: 56px 0; } .grid-3, .grid-4 { grid-template-columns: 1fr; } .gate { font-size: 12.5px; } }
+</style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="icon">A</span> Awesome AI DevKit</a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">首页</a>
+      <a href="fullstack.html">Fullstack</a>
+      <a href="coding.html" class="active">Coding</a>
+      <a href="framework.html">Framework</a>
+      <a href="pragmatic-guard.html">Pragmatic Guard</a>
+      <a href="https://github.com/x33834/awesome-ai-devkit" class="nav-cta" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <button class="nav-toggle" aria-label="菜单" onclick="document.getElementById('navLinks').classList.toggle('open')">&#9776;</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge"><span class="dot"></span> 自适应编码引擎 · Adaptive Coding</div>
+    <h1>一个场景，<span class="gradient">任意技术栈</span></h1>
+    <p class="hero-sub">auto-detect 自动识别技术栈 → team-composer 自动组队 → scaffold-generator 动态生成脚手架。前端、后端、移动端、AI/ML、CLI、库，全自动适配。</p>
+  </div>
+</section>
+
+<div class="container">
+  <section class="section" style="padding-top:20px">
+    <div class="section-header">
+      <span class="section-tag">处理流水线</span>
+      <h2 class="section-title">三步全自动</h2>
+      <p class="section-desc">从识别到脚手架，无需人工选择，环境驱动生成。</p>
+    </div>
+    <div class="pipeline">
+      <div class="pipe-step"><div class="pn">1</div><h4>auto-detect 识别</h4><p>扫描依赖/文件指纹，判定技术栈、类型、测试框架与所需角色。</p></div>
+      <div class="pipe-step"><div class="pn">2</div><h4>team-composer 组队</h4><p>按技术栈自动组建研发团队，每个角色加载对应技能清单。</p></div>
+      <div class="pipe-step"><div class="pn">3</div><h4>scaffold-generator 生成</h4><p>基于 adaptive-feature 动态生成脚手架与功能实现，挂载质量门禁。</p></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:20px">
+    <div class="section-header">
+      <span class="section-tag">支持技术栈</span>
+      <h2 class="section-title">已适配</h2>
+    </div>
+    <div class="stacks">
+      <span class="stack-tag"><b>React</b> · 前端</span>
+      <span class="stack-tag"><b>Go</b> · 后端</span>
+      <span class="stack-tag"><b>Rust</b> · CLI</span>
+      <span class="stack-tag"><b>Python</b> · 后端</span>
+      <span class="stack-tag"><b>React Native / Flutter</b> · 移动端</span>
+      <span class="stack-tag"><b>LangChain / PyTorch / TF</b> · AI/ML</span>
+      <span class="stack-tag"><b>CLI 工具</b></span>
+      <span class="stack-tag"><b>基础库</b></span>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:20px">
+    <div class="section-header">
+      <span class="section-tag">核心技能</span>
+      <h2 class="section-title">编排技能</h2>
+      <p class="section-desc">三个可编排技能驱动整条流水线。</p>
+    </div>
+    <div class="grid grid-3">
+      <div class="card"><div class="num">SKILL</div><h4>auto-detect</h4><p>读取依赖与文件指纹，返回结构化技术栈画像（栈/类型/测试框架/角色）。</p><span class="tag">识别</span></div>
+      <div class="card"><div class="num">SKILL</div><h4>team-composer</h4><p>根据技术栈自动组队并指派角色，加载各自技能与职责。</p><span class="tag">组队</span></div>
+      <div class="card"><div class="num">SKILL</div><h4>scaffold-generator</h4><p>读取 adaptive-feature.yaml，动态生成脚手架并执行功能步骤。</p><span class="tag">生成</span></div>
+    </div>
+  </section>
+</div>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">开发生命周期</span>
+      <h2 class="section-title">从需求到交付</h2>
+      <p class="section-desc">闭环工作流，含质量门禁与防坏毛病校验。</p>
+    </div>
+    <div class="grid grid-4">
+      <div class="card"><div class="num">01</div><h4>需求澄清</h4><p>指令润色，自动补全缺失信息与默认值。</p></div>
+      <div class="card"><div class="num">02</div><h4>技术栈识别</h4><p>auto-detect 判定环境与依赖。</p></div>
+      <div class="card"><div class="num">03</div><h4>脚手架生成</h4><p>动态生成项目结构与功能骨架。</p></div>
+      <div class="card"><div class="num">04</div><h4>实现与验证</h4><p>写码 → 测试 → pragmatic-guard 门禁。</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <section class="section">
+    <div class="section-header">
+      <span class="section-tag">快速启用</span>
+      <h2 class="section-title">开始使用</h2>
+    </div>
+    <div class="gate">
+      <span class="cm"># 加载自适应编码场景，任何技术栈直接开工</span><br>
+      <span class="ok">python devkit-doctor.py</span>&nbsp;&nbsp;→&nbsp;&nbsp;<span class="cm"># 健康检查</span><br>
+      <span class="cm"># 在 AI 编码工具中加载 coding 场景并描述你的需求</span><br>
+      <span class="cm"># 示例：scenarios/programming/coding/examples/todo-list-react/</span>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="fnav">
+      <a href="index.html">首页</a>
+      <a href="fullstack.html">全栈场景</a>
+      <a href="framework.html">通用能力层</a>
+      <a href="pragmatic-guard.html">Pragmatic Guard</a>
+      <a href="https://github.com/x33834/awesome-ai-devkit">GitHub</a>
+    </div>
+    <p>&copy; 2026 Awesome AI DevKit · MIT License</p>
+  </div>
+</footer>
+
+</body>
+</html>

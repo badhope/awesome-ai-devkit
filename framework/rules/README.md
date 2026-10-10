@@ -7,5 +7,3 @@
 - `rules/collaboration-rules.md` — 多 Agent 协作规则
 
 场景专属规则放各自 `scenarios/<场景>/rules/`。通用规则不复制到场景，避免重复维护。
-
-> AI生成

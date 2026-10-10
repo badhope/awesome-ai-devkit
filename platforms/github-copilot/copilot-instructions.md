@@ -16,5 +16,3 @@
 
 ## 技术栈默认（全栈场景）
 - 前端：Next.js / React + TS；后端：FastAPI + Pydantic；DB：PostgreSQL + Redis + Qdrant。
-
-> AI生成

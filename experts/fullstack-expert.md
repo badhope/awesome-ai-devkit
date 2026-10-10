@@ -89,5 +89,3 @@ Layer 11 Validation→ checks.py 全量校验
 - 部署配置（docker-compose / CI pipeline）
 - ADR 文档（架构决策记录）
 - CHANGELOG + Release Notes
-
-> AI生成

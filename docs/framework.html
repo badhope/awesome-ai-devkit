@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Awesome AI DevKit — 通用能力层（Framework）。38 个通用技能 + 11 个通用角色 + 规则 + MCP，跨场景共享的安全、质量、上下文、运维能力底座。">
+<meta name="keywords" content="framework,ai-agent,skills,security,quality,context,rules,mcp,capability-layer">
+<meta name="author" content="Awesome AI DevKit Team">
+<meta name="theme-color" content="#0a0e1a">
+<meta property="og:title" content="通用能力层 | Awesome AI DevKit">
+<meta property="og:description" content="38 个通用技能 + 11 个角色，所有场景共享的 AI 编程能力底座。">
+<title>通用能力层 | Awesome AI DevKit</title>
+<style>
+:root {
+  --bg: #0a0e1a; --bg-elevated: #0f1629; --card: #111d35; --card-hover: #162442;
+  --border: #1e2d4a; --border-light: #2a3f65;
+  --text: #e2e8f0; --text-muted: #8899b4; --text-dim: #5a6a85;
+  --accent-1: #6366f1; --accent-2: #8b5cf6; --accent-3: #06b6d4;
+  --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  --gradient-text: linear-gradient(135deg, #818cf8 0%, #a78bfa 40%, #22d3ee 100%);
+  --green: #10b981; --green-bg: rgba(16,185,129,.1);
+  --radius: 12px; --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,.3); --transition: .2s cubic-bezier(.4,0,.2,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 16px; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: var(--accent-3); text-decoration: none; transition: color var(--transition); }
+a:hover { color: #22d3ee; }
+.nav { position: sticky; top: 0; z-index: 100; background: rgba(10,14,26,.9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+.nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; height: 60px; }
+.nav-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: #fff; }
+.nav-logo .icon { width: 26px; height: 26px; border-radius: 7px; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 13px; color: #fff; font-weight: 900; }
+.nav-links { display: flex; align-items: center; gap: 20px; }
+.nav-links a { color: var(--text-muted); font-size: .84rem; font-weight: 500; }
+.nav-links a:hover { color: #fff; }
+.nav-links a.active { color: #fff; }
+.nav-cta { background: var(--gradient); color: #fff !important; padding: 6px 14px; border-radius: 18px; font-weight: 600; }
+.nav-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; padding: 4px 8px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.hero { position: relative; padding: 120px 0 80px; text-align: center; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 900px; height: 600px; background: radial-gradient(ellipse at center, rgba(99,102,241,.15) 0%, rgba(139,92,246,.08) 40%, transparent 70%); pointer-events: none; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 18px; font-size: .82rem; color: var(--text-muted); margin-bottom: 28px; }
+.hero-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px rgba(16,185,129,.6); }
+.hero h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 800; letter-spacing: -.03em; line-height: 1.15; color: #fff; margin-bottom: 18px; }
+.hero h1 .gradient { background: var(--gradient-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-sub { font-size: clamp(1rem, 2vw, 1.15rem); color: var(--text-muted); max-width: 660px; margin: 0 auto; line-height: 1.6; }
+.section { padding: 84px 0; }
+.section-alt { background: linear-gradient(180deg, var(--bg) 0%, var(--bg-elevated) 50%, var(--bg) 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.section-header { text-align: center; margin-bottom: 52px; }
+.section-tag { display: inline-block; font-size: .78rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 14px; }
+.section-title { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 700; letter-spacing: -.02em; color: #fff; margin-bottom: 12px; }
+.section-desc { font-size: 1.02rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+.grid { display: grid; gap: 20px; }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; transition: var(--transition); }
+.card:hover { transform: translateY(-3px); border-color: var(--border-light); box-shadow: var(--shadow); }
+.card .num { font-size: .78rem; font-weight: 700; color: var(--accent-1); font-family: ui-monospace, monospace; }
+.card h4 { font-size: 1.02rem; color: #fff; margin: 8px 0 8px; }
+.card p { font-size: .9rem; color: var(--text-muted); line-height: 1.6; }
+.card .tag { display: inline-block; font-size: .72rem; font-weight: 600; padding: 3px 10px; border-radius: 6px; margin-top: 10px; background: var(--green-bg); color: var(--green); }
+.layer-list { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.layer { display: flex; align-items: center; gap: 16px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 20px; }
+.layer .ln { flex: none; width: 40px; height: 40px; border-radius: 10px; background: var(--gradient); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.layer .lbody { flex: 1; }
+.layer .lname { font-size: .98rem; font-weight: 600; color: #fff; }
+.layer .ldesc { font-size: .82rem; color: var(--text-muted); margin-top: 2px; }
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14.5px; min-width: 460px; }
+th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+th { color: var(--text-muted); font-weight: 600; background: var(--bg-elevated); }
+td { color: var(--text); }
+tr:hover td { background: var(--card-hover); }
+.gate { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 13.5px; margin: 0 auto; max-width: 760px; text-align: left; overflow-x: auto; }
+.gate .ok { color: var(--green); }
+.gate .cm { color: var(--text-dim); }
+.footer { border-top: 1px solid var(--border); padding: 40px 0 32px; background: var(--bg-elevated); }
+.footer .fnav { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; font-size: .84rem; margin-bottom: 18px; }
+.footer p { text-align: center; color: var(--text-dim); font-size: .82rem; }
+@media (max-width: 1024px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 800px) { .nav-links { display: none; } .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 14px 24px; gap: 14px; } .nav-toggle { display: flex; } }
+@media (max-width: 640px) { .hero { padding: 96px 0 56px; } .section { padding: 56px 0; } .grid-3, .grid-4 { grid-template-columns: 1fr; } .gate { font-size: 12.5px; } }
+</style>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="icon">A</span> Awesome AI DevKit</a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">首页</a>
+      <a href="fullstack.html">Fullstack</a>
+      <a href="coding.html">Coding</a>
+      <a href="framework.html" class="active">Framework</a>
+      <a href="pragmatic-guard.html">Pragmatic Guard</a>
+      <a href="https://github.com/x33834/awesome-ai-devkit" class="nav-cta" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <button class="nav-toggle" aria-label="菜单" onclick="document.getElementById('navLinks').classList.toggle('open')">&#9776;</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge"><span class="dot"></span> 通用能力层 · Framework</div>
+    <h1>所有场景共享的 <span class="gradient">能力底座</span></h1>
+    <p class="hero-sub">38 个通用技能 + 11 个通用角色 + 规则 + MCP。安全、质量、上下文、模型路由等能力，一次定义，处处复用。</p>
+  </div>
+</section>
+
+<div class="container">
+  <section class="section" style="padding-top:20px">
+    <div class="section-header">
+      <span class="section-tag">分层架构</span>
+      <h2 class="section-title">从提示到强制</h2>
+      <p class="section-desc">不靠自觉，靠机制强制。</p>
+    </div>
+    <div class="layer-list">
+      <div class="layer"><div class="ln">L0</div><div class="lbody"><div class="lname">提示层 · 指令</div><div class="ldesc">AGENTS.md 与角色定义，让 AI 打开即知规则。</div></div></div>
+      <div class="layer"><div class="ln">L1</div><div class="lbody"><div class="lname">机制层 · 技能与脚手架</div><div class="ldesc">38 个技能 + scaffold 协议驱动标准化流程。</div></div></div>
+      <div class="layer"><div class="ln">L2</div><div class="lbody"><div class="lname">平台层 · Hooks</div><div class="ldesc">pre-task / post-task 钩子自动挂载检查。</div></div></div>
+      <div class="layer"><div class="ln">L3</div><div class="lbody"><div class="lname">门禁层 · CI / 强制脚本</div><div class="ldesc">enforce_active + pragmatic-guard，FAIL 即阻断提交。</div></div></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:20px">
+    <div class="section-header">
+      <span class="section-tag">能力分组</span>
+      <h2 class="section-title">38 个通用技能</h2>
+      <p class="section-desc">按职责分组，覆盖编码全流程。</p>
+    </div>
+    <div class="grid grid-3">
+      <div class="card"><div class="num">01</div><h4>开发实现</h4><p>架构设计、API 设计、前后端实现、数据库、调试、重构、集成模式。</p></div>
+      <div class="card"><div class="num">02</div><h4>质量保障</h4><p>测试策略、变异测试、代码评审、循环验证、脚手架工作流、项目健康。</p></div>
+      <div class="card"><div class="num">03</div><h4>安全合规</h4><p>安全治理、密钥扫描、依赖审计、子代理守护、AI 注入防御。</p></div>
+      <div class="card"><div class="num">04</div><h4>上下文效率</h4><p>指令润色、上下文压缩、持久记忆、会话延续、任务追踪。</p></div>
+      <div class="card"><div class="num">05</div><h4>交付运维</h4><p>CI/CD、可观测性、混沌工程、语义化发布、SBOM 生成。</p></div>
+      <div class="card"><div class="num">06</div><h4>平台能力</h4><p>模型路由、文档写作、DevKit 基础设施、工具集成。</p></div>
+    </div>
+  </section>
+</div>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">角色 · 规则 · MCP</span>
+      <h2 class="section-title">完整构成</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>组成</th><th>说明</th><th>路径</th></tr>
+        <tr><td>通用角色</td><td>11 个角色（PM/架构/DB/前后端/设计/QA/评审/安全/DevOps/SRE）</td><td>framework/agents/</td></tr>
+        <tr><td>通用技能</td><td>38 个跨场景技能</td><td>framework/skills/</td></tr>
+        <tr><td>规则</td><td>编码规范、协作规则、安全清单</td><td>framework/rules/</td></tr>
+        <tr><td>MCP</td><td>场景级 MCP 服务配置</td><td>scenarios/*/mcp/</td></tr>
+        <tr><td>门禁脚本</td><td>完工校验、防坏毛病扫描</td><td>hooks/scripts/</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <section class="section">
+    <div class="section-header">
+      <span class="section-tag">质量门禁</span>
+      <h2 class="section-title">Pragmatic Guard</h2>
+      <p class="section-desc">拦截重复造轮 / 冗余文件 / 虚假实现 / 过度设计 / 业务不合逻辑。</p>
+    </div>
+    <div class="gate">
+      <span class="ok">python3 framework/lib/scripts/quality/pragmatic-guard.py --project .</span><br>
+      <span class="ok">✅ PASS: 0 个问题 · exit=0</span><br>
+      <span class="cm">详情见 <a href="pragmatic-guard.html" style="color:var(--accent-3)">Pragmatic Guard 落地页</a></span>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="fnav">
+      <a href="index.html">首页</a>
+      <a href="fullstack.html">全栈场景</a>
+      <a href="coding.html">自适应编码</a>
+      <a href="pragmatic-guard.html">Pragmatic Guard</a>
+      <a href="https://github.com/x33834/awesome-ai-devkit">GitHub</a>
+    </div>
+    <p>&copy; 2026 Awesome AI DevKit · MIT License</p>
+  </div>
+</footer>
+
+</body>
+</html>

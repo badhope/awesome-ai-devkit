@@ -43,5 +43,3 @@ bash hooks/scripts/post-task.sh scaffold.yaml
 5. **失败必须有回退** — `on_failure.retry` + `fallback_skill`
 
 协议文档: [../../../../scaffolds/scaffold-protocol.md](../../../../scaffolds/scaffold-protocol.md)
-
-> AI生成

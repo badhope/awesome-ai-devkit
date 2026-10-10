@@ -88,5 +88,3 @@ hooks:
   - 复用 `programming/fullstack/` 中的前端/后端 agent
   - 额外引入 `programming/ml-native/` 的 ml-engineer
   - 可选引入 `data-engineering/` 的数据处理技能
-
-> AI生成

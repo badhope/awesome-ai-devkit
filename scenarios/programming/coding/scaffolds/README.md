@@ -30,5 +30,3 @@ bash hooks/scripts/post-task.sh scaffold.yaml
 - **本场景**：通用底座，语言无关，适合脚本/CLI/库/算法等通用任务
 - **fullstack**：全栈端到端（含部署/数据库/前端），适合特定 Web 技术栈项目
 - 两者均复用 `framework/skills/` 38 个通用技能，不重复定义
-
-> AI生成

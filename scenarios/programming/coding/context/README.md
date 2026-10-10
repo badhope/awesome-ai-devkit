@@ -30,5 +30,3 @@ cp context/project.template.yaml context/project.yaml
 | 密钥 | 绝不放 context/；用环境变量或 vault |
 | 日志 | sessions/*.jsonl 保留 50 个，自动轮转 |
 | 范围 | denied_paths 列出的目录 Agent 拒绝操作 |
-
-> AI生成

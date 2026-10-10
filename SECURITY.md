@@ -28,5 +28,3 @@ We will acknowledge within 3 business days and respond with next steps.
 - Do not commit absolute personal paths (e.g. `/Users/xxx`, `C:\Users\xxx`, `/mnt/...`). Use `${PROJECT_ROOT}` or `${workspaceFolder}`.
 - Use `filesystem_block` in MCP configs to protect `.env`, `.git/`, keys, and secrets.
 - Run `python devkit-doctor.py` and the bundled secret scanner before submitting.
-
-> AI生成

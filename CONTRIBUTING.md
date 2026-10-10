@@ -68,5 +68,3 @@ Use the issue tracker. Include:
 - Any error output from `devkit-doctor.py`
 
 Thanks for making AI coding configuration better for everyone.
-
-> AI生成

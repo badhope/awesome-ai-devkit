@@ -15,5 +15,3 @@
 
 ## MCP
 - 启用本仓库场景的 MCP server（`mcp/mcp-config.yaml` 中 `enabled: true`）。
-
-> AI生成

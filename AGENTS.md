@@ -133,5 +133,3 @@ python -m pytest -q
 bash   scenarios/programming/fullstack/bootstrap.sh   # macOS/Linux
 powershell -File scenarios/programming/fullstack/bootstrap.ps1   # Windows
 ```
-
-> AI生成

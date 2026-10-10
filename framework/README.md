@@ -55,5 +55,3 @@ framework/
 - 统一指令：根 `AGENTS.md`
 - 平台适配：`platforms/`
 - 场景扩展：`scenarios/README.md`
-
-> AI生成

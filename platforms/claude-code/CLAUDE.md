@@ -29,5 +29,3 @@ Claude Code 打开本仓库后自动读取本文件与根 `AGENTS.md`。
 - 角色：`scenarios/<场景>/agents/`
 - 技能：`scenarios/<场景>/skills/`
 - 工作流：`scenarios/<场景>/scaffolds/`
-
-> AI生成
